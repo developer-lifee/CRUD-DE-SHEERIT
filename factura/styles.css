@@ -1,0 +1,111 @@
+/* Estilos CSS para el fondo de la página */
+body {
+    background-color: #c4e1f2; /* Cambio de color de fondo */
+  }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    margin-top: 10px; /* Agregado para crear espacio entre el banner y la tabla */
+  }
+  
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #e0e4f3;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  td {
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Estilos CSS para dispositivos móviles */
+  @media only screen and (max-width: 600px) {
+    table {
+      display: grid;
+    }
+    
+    thead {
+      display: none;
+    }
+    
+    tbody tr {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 10px;
+    }
+    
+    td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px;
+      font-weight: bold;
+      border: none;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    td::before {
+        content: attr(data-label);
+        flex-basis: 50%;
+        text-align: left;
+        background-color: #e0e4f3;
+        color: #000000;
+        padding: 5px;
+        border-radius: 5px;
+        border: 0.5px solid #333; /* Agregado: borde de 1px */
+      }
+  }
+  
+  /* Estilos CSS para el banner */
+  .banner {
+    background-color: #4ad0fc;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    padding: 10px;
+    margin-bottom: 30px; /* Ajusta el margen inferior para crear espacio adicional */
+    position: relative;
+    border-radius: 5px;
+  }
+  
+  .button {
+    display: inline-block;
+    background-color: #ddd;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%); /* Centrar horizontalmente */
+    border: 1.5px solid #333; /* Esta línea define el borde */
+
+  }
+  
+
+  .copy-button {
+    display: block;
+    margin: 0 auto;
+    background-color: #ddd;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    margin-top: 20px;
+    border: 1.5px solid #333; /* Esta línea define el borde */
+
+  }

@@ -1,0 +1,163 @@
+body {
+  font-family: 'Poppins', sans-serif;
+   background: linear-gradient(360deg, #000000, #200c03, #331207, #49150a, #5f170c, #77170d, #8f160c, #a8120c, #c20a0a);
+}
+.crunchyroll {
+    background-image: radial-gradient(circle at 50% 50%, #ffd28a 0, #ffc883 12.5%, #ffb978 25%, #f8a76a 37.5%, #ec9059 50%, #e0794a 62.5%, #d76541 75%, #d1553e 87.5%, #ce4940 100%);
+}
+
+.disney {
+    background-image: radial-gradient(circle at 50% -20.71%, #8671cc 0, #5e5bc3 25%, #1547bb 50%, #0036b3 75%, #002aab 100%);
+}
+
+.hbo {
+    background-image: linear-gradient(225deg, #8c63ee 0, #4d42d4 50%, #0026ba 100%);
+}
+
+.paramount {
+    background-image: linear-gradient(180deg, #b2eaff 0, #5389f2 50%, #003265 100%);
+}
+
+.prime{
+    background-image: linear-gradient(180deg, #00ffff 0, #41f5ff 25%, #53bcf2 50%, #5087ab 75%, #425a6e 100%);
+}
+
+.spotify{
+    background-image: linear-gradient(180deg, #96f068 0, #7bea67 16.67%, #58e165 33.33%, #16d662 50%, #00cb60 66.67%, #00c262 83.33%, #00ba66 100%);
+}
+
+.star {
+    background-image: linear-gradient(180deg, #ad1e6e 0, #94186a 16.67%, #791161 33.33%, #5c0a55 50%, #400447 66.67%, #28023a 83.33%, #18002f 100%);
+}
+
+.yt{
+    background-image: radial-gradient(circle at 50% -20.71%, #e77c00 0, #e76700 12.5%, #e14f00 25%, #d53300 37.5%, #c30303 50%, #af0010 62.5%, #9d0017 75%, #8c001c 87.5%, #7e0021 100%);
+}
+
+form {
+    color: black;
+    margin-top: 0.5vh;
+    margin-bottom: 20%; 
+    background-color: white;
+    border-radius: 10px;  
+    width: 30%;
+    padding: 10px 0;
+    box-shadow: 0 0 6px 0 rgba(255, 255, 255, 0.8);
+}
+
+h1{  
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    margin: 10px;
+    font-weight: 800;
+}
+.ti_crunchy {
+    color: orange;
+}
+
+.ti_paramount{
+
+    color: #0f457a;
+}
+
+.ti_prime{
+    color: rgb(30, 151, 207);
+}
+
+.ti_spotify{
+    color: green;
+}
+
+.form{
+    width: 100%;
+    margin: auto;
+}
+
+.form .grupo{
+    position: relative;
+    margin: 48px;
+}
+
+.espacios > input{
+    background: none;
+    font-size: 18px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--colorTextos);
+    border-style: double;
+    border-color: gray;
+    border-radius: 8px;
+}
+
+.button {
+    background: grey;
+    display: block;
+    width:  100px;
+    height: 40px;
+    border: none;
+    color: #000000;
+    border-radius: 4px;
+    font-size: 16px;
+    margin: 10px auto;
+    cursor: pointer;  
+ }
+
+.button {
+    border-color: grey;
+    color: #fff;
+    box-shadow: 0 0 40px 40px grey inset, 0 0 0 0 grey;
+    -webkit-transition: all 150ms ease-in-out;
+    transition: all 150ms ease-in-out;
+  }
+  .button:hover {
+    box-shadow: 0 0 10px 0 grey inset, 0 0 10px 4px grey;
+  }
+
+.form_netflix {
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.grupo {
+  margin-bottom: 20px;
+}
+
+.espacios {
+  display: flex;
+  flex-direction: column;
+}
+
+.espacios input,
+.espacios select {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media (min-width: 600px) {
+  .espacios {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .espacios input,
+  .espacios select {
+    width: 48%;
+  }
+}
