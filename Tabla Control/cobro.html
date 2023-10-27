@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Facturación Compra</title>
+    <style>
+        .rojo {
+            color: red;
+        }
+        .amarillo {
+            color: yellow;
+        }
+
+        /* CSS para el botón desplegable */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #2980b9;
+        }
+
+        /* CSS para el formulario de asignar mensaje */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .modal-content {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-width: 400px;
+            margin: 0 auto; /* Centra horizontalmente el formulario */
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <br>
+        <a href="#" class="button">Sheer It</a>
+
+        <!-- Oculta el input de archivo original -->
+        <input type="file" id="fileToUpload" name="fileToUpload" style="display: none;">
+
+        <!-- Crea un nuevo botón que activará el input de archivo -->
+        <button id="uploadButton" class="button">Cargar archivo</button>
+
+        <!-- Formulario para enviar el archivo al servidor -->
+        <form id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
+            <input type="submit" value="Upload Image" name="submit">
+        </form>
+    </div>
+
+    <label for="filtroColor">Filtrar por color:</label>
+    <select id="filtroColor">
+        <option value="todos">Todos</option>
+        <option value="rojo">Rojo</option>
+        <option value="amarillo">Amarillo</option>
+    </select>
+
+    <!-- Campo para ingresar la cantidad de días para aplicar el color amarillo -->
+    <label for="diasAmarillo">Días para Amarillo:</label>
+    <input type="number" id="diasAmarillo" min="1" max="7">
+
+    <button id="aplicarFiltro" class="button">Aplicar Filtro</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Streaming</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>WhatsApp</th>
+                <th>Correo</th>
+                <th>Contraseña</th>
+                <th>Perfil</th>
+                <th>Deben</th>
+                <th>Dias faltantes</th>
+                <th>Cobrar</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-datos">
+            <!-- Aquí se mostrarán los datos -->
+        </tbody>
+    </table>
+
+    <button class="copy-button" onclick="enviarWhatsApp()">Enviar datos a WhatsApp</button>
+
+    <div class="modal" id="messageModal">
+        <div class="modal-content" id="messageForm">
+            <form id="assignMessageForm">
+                <label for="assignedMessage">Mensaje asignado:</label>
+                <textarea id="assignedMessage" name="assignedMessage"></textarea>
+                <button type="button" onclick="guardarMensaje()">Guardar</button>
+                <button type="button" onclick="cerrarModal()">Cerrar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var datosFiltrados = [];
+
+        $(document).ready(function() {
+            // Realiza una solicitud AJAX para obtener los datos de agregar.php
+            $.ajax({
+                url: 'agregar.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Guarda los datos en la variable datosFiltrados
+                    datosFiltrados = data;
+                    mostrarDatos(data);
+                },
+                error: function() {
+                    alert("Error al obtener los datos");
+                }
+            });
+
+            // Agrega un controlador de eventos para el clic en "Aplicar Filtro"
+            $('#aplicarFiltro').on('click', function() {
+                filtrarDatosPorColor();
+            });
+        });
+
+        function mostrarDatos(data) {
+            // Limpia la tabla
+            $("#tabla-datos").empty();
+
+            data.forEach(function(row) {
+                var newRow = "<tr>";
+                newRow += "<td data-label='Streaming'>" + row.streaming + "</td>";
+                newRow += "<td data-label='Nombre'>" + row.nombre + "</td>";
+                newRow += "<td data-label='Apellido'>" + row.apellido + "</td>";
+                newRow += "<td data-label='WhatsApp'>" + row.whatsapp + "</td>";
+                newRow += "<td data-label='Correo'>" + row.correo + "</td>";
+                newRow += "<td data-label='Contraseña'>" + row.contrasena + "</td>";
+                newRow += "<td data-label='Perfil'>" + row.perfil + "</td>";
+
+                if (row.deben) {
+                    // Calcular los días faltantes
+                    var fechaDeben = new Date(row.deben);
+                    var hoy = new Date();
+                    var tiempoRestante = fechaDeben - hoy;
+                    var diasFaltantes = Math.ceil(tiempoRestante / (1000 * 60 * 60 * 24));
+
+                    // Aplicar clases de estilo según los requisitos
+                    var diasFaltantesClass = "";
+                    if (diasFaltantes < 0) {
+                        diasFaltantesClass = "rojo";
+                    } else if (diasFaltantes <= parseInt($('#diasAmarillo').val())) {
+                        diasFaltantesClass = "amarillo";
+                    }
+
+                    newRow += "<td data-label='Deben' class='" + diasFaltantesClass + "'>" + row.deben + "</td>";
+                    newRow += "<td data-label='Dias faltantes' class='" + diasFaltantesClass + "'>" + diasFaltantes + "</td>";
+                } else {
+                    newRow += "<td data-label='Deben'></td>";
+                    newRow += "<td data-label='Dias faltantes'></td>";
+                }
+
+                // Agregar el botón desplegable para "Cobrar" con la opción "Asignar mensaje"
+                var mensaje = "Hola Señor@ " + row.nombre + " " + row.apellido + ",\n";
+                mensaje += "Esta pendiente el pago de su servicio de " + row.streaming + " que se le venció el día " + row.deben + ".\n";
+                var mensajeCodificado = encodeURIComponent(mensaje);
+
+                newRow += `<td data-label='Cobrar' class="dropdown">
+                    <button class="dropbtn" onclick="mostrarFormularioMensaje(${row.id})">Cobrar</button>
+                    <div class="dropdown-content">
+                        <a href='https://api.whatsapp.com/send?phone=${row.whatsapp}&text=${mensajeCodificado}'>Cobrar</a>
+                        <a href="#">Asignar mensaje</a>
+                    </div>
+                </td>`;
+
+                newRow += "</tr>";
+                $("#tabla-datos").append(newRow);
+            });
+        }
+
+        function mostrarFormularioMensaje(userId) {
+             // Mostrar el modal y el formulario de asignar mensaje
+            var modal = document.getElementById("messageModal");
+            modal.style.display = "block";
+
+            // Guardar el ID del usuario al que se le asignará el mensaje
+            var form = document.getElementById("messageForm");
+            form.dataset.userId = userId; // Corregimos la propiedad del dataset
+            console.log(row.id)
+        }
+
+        function guardarMensaje() {
+            // Obtener el mensaje del formulario
+            
+            var userId = document.getElementById("messageForm").dataset.userId;
+            console.log(userId)
+            var mensaje = document.getElementById("assignedMessage").value;
+
+            // Realizar una solicitud AJAX para guardar el mensaje en la base de datos
+            $.ajax({
+                url: 'mensaje.php', // Asegúrate de que el archivo mensaje.php esté en la ubicación correcta
+                type: 'POST', // Cambiamos a POST
+                data: {
+                    userId: userId,
+                    mensaje: mensaje
+                },
+                success: function(response) {
+                    alert(response); // Muestra la respuesta del servidor
+                    // Ocultar el modal
+                    var modal = document.getElementById("messageModal");
+                    modal.style.display = "none";
+                },
+                error: function() {
+                    alert("Error al guardar el mensaje");
+                }
+            });
+        }
+
+        function cerrarModal() {
+            // Cerrar el modal
+            var modal = document.getElementById("messageModal");
+            modal.style.display = "none";
+        }
+
+        function filtrarDatosPorColor() {
+            var filtro = $('#filtroColor').val();
+            var diasAmarillo = parseInt($('#diasAmarillo').val()); // Obtener la cantidad de días amarillos
+
+            var datosFiltradosMostrar = [];
+
+            if (filtro === 'rojo') {
+                datosFiltradosMostrar = datosFiltrados.filter(function(row) {
+                    return row.deben && new Date(row.deben) < new Date();
+                });
+            } else if (filtro === 'amarillo') {
+                datosFiltradosMostrar = datosFiltrados.filter(function(row) {
+                    return row.deben && new Date(row.deben) >= new Date() && Math.ceil((new Date(row.deben) - new Date()) / (1000 * 60 * 60 * 24)) <= diasAmarillo; // Usar la cantidad de días ingresada
+                });
+            } else if (filtro === 'todos') {
+                datosFiltradosMostrar = datosFiltrados;
+            }
+
+            mostrarDatos(datosFiltradosMostrar);
+        }
+    </script>
+</body>
+</html>
