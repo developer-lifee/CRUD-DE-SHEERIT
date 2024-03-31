@@ -13,7 +13,7 @@ jobs:
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftps4.us.freehostia.com
+          server: sheerit.com.co
           username: estavi0
           password: dc5*PT0{9\02
           server-dir: /public_html/mi-sitio-web/
