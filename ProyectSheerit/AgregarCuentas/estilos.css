@@ -1,0 +1,110 @@
+:root {
+    --colorTextos: #c6c6c6; /* Define your text color variable here */
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to right, #6aa4b3, #4568DC);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    background: #fff;
+    padding: 40px;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+}
+
+.grupo {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 20px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background-color: #4568DC;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="button"] {
+    background-color: #f0f0f0;
+    color: black;
+    padding: 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+button[type="button"]:hover {
+    background-color: #ddd;
+}
+
+@media screen and (max-width: 600px) {
+    .form, button[type="submit"], button[type="button"] {
+        width: 100%;
+    }
+}
+
+
+.grupo {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+input[type="email"], input[type="password"], select {
+    width: 100%;
+    padding: 10px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Style adjustments for select element to improve appearance */
+select {
+    -webkit-appearance: none; /* Remove default style for WebKit browsers */
+    -moz-appearance: none; /* Remove default style for Mozilla browsers */
+    appearance: none; /* Remove default style for standard specification */
+    background-color: white;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 30px; /* Make space for the arrow icon */
+}
+
+/* Positioning the password visibility toggle inside the input field */
+#togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+@media screen and (max-width: 600px) {
+    .form, button[type="submit"], button[type="button"] {
+        width: 100%;
+    }
+}
+

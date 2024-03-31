@@ -1,7 +1,15 @@
 body {
-  font-family: 'Poppins', sans-serif;
-   background: linear-gradient(360deg, #000000, #200c03, #331207, #49150a, #5f170c, #77170d, #8f160c, #a8120c, #c20a0a);
-}
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(360deg, #000000, #200c03, #331207, #49150a, #5f170c, #77170d, #8f160c, #a8120c, #c20a0a); 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8vh;
+    margin-bottom: 10vh;
+
+} 
 .crunchyroll {
     background-image: radial-gradient(circle at 50% 50%, #ffd28a 0, #ffc883 12.5%, #ffb978 25%, #f8a76a 37.5%, #ec9059 50%, #e0794a 62.5%, #d76541 75%, #d1553e 87.5%, #ce4940 100%);
 }
@@ -40,7 +48,7 @@ form {
     margin-bottom: 20%; 
     background-color: white;
     border-radius: 10px;  
-    width: 30%;
+    
     padding: 10px 0;
     box-shadow: 0 0 6px 0 rgba(255, 255, 255, 0.8);
 }
@@ -114,50 +122,66 @@ h1{
   .button:hover {
     box-shadow: 0 0 10px 0 grey inset, 0 0 10px 4px grey;
   }
-
-.form_netflix {
-  width: 90%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 4px;
-}
-
-.grupo {
-  margin-bottom: 20px;
-}
-
-.espacios {
-  display: flex;
-  flex-direction: column;
-}
-
-.espacios input,
-.espacios select {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.button {
-  padding: 10px 20px;
-  background-color: #ff0000;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-@media (min-width: 600px) {
-  .espacios {
-    flex-direction: row;
-    justify-content: space-between;
+  .content{
+    position: relative;
+    bottom: 23px;
   }
 
-  .espacios input,
-  .espacios select {
-    width: 48%;
+  label {
+    font-weight: bold; 
+    font-size: 18px;
+    margin-right: 1px; 
+}
+  #pago {
+    position: relative;
+    top: 5px;
+    width: 200px; 
+    padding: 3px; 
+    border: none;
+    border-bottom: 1px solid var(--colorTextos);
+    border-style: double;
+    border-color: gray;
+    border-radius: 8px;  
+    border-radius: 5px; 
+    font-size: 20px; 
   }
+
+  #pago option {
+    font-size: 18px; 
+  }
+
+@media screen and (mad-width: 1100px){
+    .form{
+        width: 90%;
+    }
+    #pago{
+        width: 90%;
+    }
+}
+
+@media screen and (mad-width: 600px){
+    .form{
+        width: 90%;
+    }
+    #pago{
+        width: 80%;
+    }
+}
+
+@media screen and (mad-width: 450px){
+    .form{
+        width: 90%;
+    }
+    #pago{
+        width: 60%;
+    }
+}
+
+@media screen and (mad-width: 300px){
+    .form{
+        width: 90%;
+    }
+    #pago{
+        width: 50%;
+    }
 }

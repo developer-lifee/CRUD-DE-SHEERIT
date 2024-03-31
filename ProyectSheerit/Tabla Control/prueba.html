@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Facturacion Compra</title>
+  <!-- Incluye jQuery solo una vez -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <div class="banner">
+    <br>
+    <a href="#" class="button">Sheer It</a>
+    <form action="prueba.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="csv_file">
+      <input type="submit" value="Cargar">
+    </form>
+  </div>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Streaming</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>WhatsApp</th>
+        <th>Correo</th>
+        <th>Contraseña</th>
+        <th>Perfil</th>
+        <th>Deben</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-datos">
+      <!-- Aquí se mostrarán los datos -->
+    </tbody>
+  </table>
+
+  <!-- Si tienes la función enviarWhatsApp(), agrégala aquí -->
+  <button class="copy-button" onclick="enviarWhatsApp()">Enviar datos a WhatsApp</button>
+
+  <script>
+    $(document).ready(function() {
+      // Realiza una solicitud AJAX para obtener los datos de agregar.php
+      $.ajax({
+        url: 'agregar.php',
+        type: 'GET', // Puedes cambiar a POST si es necesario
+        dataType: 'json',
+        success: function(data) {
+          // Itera sobre los datos y muestra cada fila en la tabla
+          data.forEach(function(row) {
+            var newRow = "<tr>";
+            newRow += "<td data-label='Streaming'>" + row.streaming + "</td>";
+            newRow += "<td data-label='Nombre'>" + row.nombre + "</td>";
+            newRow += "<td data-label='Apellido'>" + row.apellido + "</td>";
+            newRow += "<td data-label='WhatsApp'>" + row.whatsapp + "</td>";
+            newRow += "<td data-label='Correo'>" + row.correo + "</td>";
+            newRow += "<td data-label='Contraseña'>" + row.contrasena + "</td>";
+            newRow += "<td data-label='Perfil'>" + row.perfil + "</td>";
+            newRow += "<td data-label='Deben'>" + row.deben + "</td>";
+            newRow += "</tr>";
+            $("#tabla-datos").append(newRow);
+          });
+        },
+        error: function() {
+          alert("Error al obtener los datos");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

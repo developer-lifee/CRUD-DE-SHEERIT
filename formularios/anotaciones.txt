@@ -1,3 +1,0 @@
-en la etiqueta de formularios de toods los formularios, le agregue los atributos method y action para unirlos a los php y enviar los datos.
-el name de fecha lo cambie a deben, quite el required de forma de pago y esos fueron todos los cambios en los formularios.
-en agregar solo llame los 4 datos necesarios y todo es practicamente igual al de Sergio
