@@ -15,5 +15,5 @@ jobs:
         with:
           server: ftps4.us.freehostia.com
           username: estavi0
-          password: ${{ secrets.ftp_password }}
+          password: dc5*PT0{9\02
           server-dir: /public_html/mi-sitio-web/
