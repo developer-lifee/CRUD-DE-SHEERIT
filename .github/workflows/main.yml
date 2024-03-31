@@ -16,4 +16,4 @@ jobs:
           server: sheerit.com.co
           username: estavi0
           password: 1234-A
-          server-dir: /public_html/mi-sitio-web/
+          server-dir: /sheerit.com.co/admin/
