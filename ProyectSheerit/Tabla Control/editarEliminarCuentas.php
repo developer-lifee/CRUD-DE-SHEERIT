@@ -4,8 +4,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (isset($_POST["idCuenta"], $_POST["correo"], $_POST["clave"])) {
             // Conexión a la base de datos
             $host = "localhost";
-            $db_name = "id20971532_sheerit";
-            $username = "id20971532_root";
+            $db_name = "estavi0_sheerit";
+            $username = "estavi0_sheerit";
             $password = "26o6ssCOA^";
 
             try {
