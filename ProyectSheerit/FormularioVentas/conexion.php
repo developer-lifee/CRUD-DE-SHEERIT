@@ -1,5 +1,5 @@
 <?php
-$host = "mysql.freehostia.com";
+$host = "localhost";
 $db_name = "estavi0_sheerit";
 $username = "estavi0_sheerit";
 $password = "26o6ssCOA^";
