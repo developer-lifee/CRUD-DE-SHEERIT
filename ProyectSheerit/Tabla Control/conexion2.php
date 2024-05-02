@@ -1,9 +1,5 @@
 <?php
 
-// $host = "localhost";
-// $db_name = "estavi0_sheerit";
-// $username = "estavi0_sheerit";
-// $password = "26o6ssCOA^";
 
 $host = "localhost";
 $db_name = "estavi0_sheerit";
@@ -45,9 +41,17 @@ try {
         $stmtListaMaestra->execute(['id_streaming' => $perfil['id_streaming']]);
         $datosListaMaestra = $stmtListaMaestra->fetch(PDO::FETCH_ASSOC);
 
-        // Combinar toda la información
-        $infoCompleta[] = array_merge($perfil, $datosCuenta, $datosCliente, $datosListaMaestra);
+        // Verificar si $datosListaMaestra es un array válido antes de combinarlo
+        if (is_array($datosListaMaestra)) {
+            // Combinar toda la información
+            $infoCompleta[] = array_merge($perfil, $datosCuenta, $datosCliente, $datosListaMaestra);
+        } else {
+            // Manejar el caso en el que la consulta no devolvió resultados
+            // Por ejemplo, puedes agregar un valor predeterminado o ignorar esta entrada
+            $infoCompleta[] = array_merge($perfil, $datosCuenta, $datosCliente);
+        }
     }
+
 
     // Aquí puedes procesar $infoCompleta, por ejemplo, mostrarla en una tabla HTML
    header('Content-Type: application/json');
