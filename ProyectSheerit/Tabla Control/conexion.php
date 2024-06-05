@@ -52,7 +52,7 @@ function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto,
         $fechaCuenta = date('Y-m-d H:i:s'); // Usa la fecha y hora actual
         
         // Inserta los datos en datosCuenta
-        $stmtDatosCuenta = $conn->prepare("INSERT INTO datosCuenta (correo, clave, fechaCuenta, id_streaming) VALUES (?, ?, ?, ?, ?)");
+        $stmtDatosCuenta = $conn->prepare("INSERT INTO datosCuenta (correo, clave, fechaCuenta, id_streaming) VALUES (?, ?, ?, ?)");
         $stmtDatosCuenta->execute([$correo, $clave, $fechaCuenta, $id_streaming]);
 
         //DEBEN EN NULL / Fecha en pinPerfil
@@ -75,5 +75,3 @@ function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto,
         return false;
     }
 }
-
-?>
