@@ -5,7 +5,6 @@ $db_name = "estavi0_sheerit";
 $username = "estavi0_sheerit";
 $password = "26o6ssCOA^";
 
-
 try {
     $conn = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -53,14 +52,14 @@ function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto,
         $fechaCuenta = date('Y-m-d H:i:s'); // Usa la fecha y hora actual
         
         // Inserta los datos en datosCuenta
-        $stmtDatosCuenta = $conn->prepare("INSERT INTO datosCuenta (correo, clave, streaming, fechaCuenta, id_streaming) VALUES (?, ?, ?, ?, ?)");
-        $stmtDatosCuenta->execute([$correo, $clave, $streaming, $fechaCuenta, $id_streaming]);
+        $stmtDatosCuenta = $conn->prepare("INSERT INTO datosCuenta (correo, clave, fechaCuenta, id_streaming) VALUES (?, ?, ?, ?, ?)");
+        $stmtDatosCuenta->execute([$correo, $clave, $fechaCuenta, $id_streaming]);
 
         //DEBEN EN NULL / Fecha en pinPerfil
         // Prepara los datos para contabilidad
         $debenFormatted = $fechaPerfil ? $fechaPerfil : '0000-00-00 00:00:00'; // Formato de fecha por defecto si 'deben' está vacío
 
-        // Inserta los datos en contabilidad
+        // Inserta los datos en contabilidad si es necesario
         // $stmtContabilidad = $conn->prepare("INSERT INTO contabilidad (clienteID, deben, valorDeuda, valorDescuento) VALUES (?, ?, ?, ?)");
         // $stmtContabilidad->execute([$clienteID, $debenFormatted, 0, 0]); // Asigna 0 a valorDeuda y valorDescuento por defecto
         
@@ -76,6 +75,5 @@ function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto,
         return false;
     }
 }
-
 
 ?>
