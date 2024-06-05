@@ -5,13 +5,17 @@ $db_name = "estavi0_sheerit";
 $username = "estavi0_sheerit";
 $password = "26o6ssCOA^";
 
-
 try {
     $conn = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $exception) {
     echo "Error de conexión: " . $exception->getMessage();
     exit;
+}
+
+function convertirFecha($fecha) {
+    $date = DateTime::createFromFormat('m/d/Y', $fecha);
+    return $date ? $date->format('Y-m-d H:i:s') : '0000-00-00 00:00:00';
 }
 
 function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben) {
@@ -32,12 +36,21 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         }
         
         $id_streaming = $streamingData['id_streaming'];
-        
-        // Inserta los datos en datos_de_cliente con activo en 1
-        $stmtDatosCliente = $conn->prepare("INSERT INTO datos_de_cliente (nombre, apellido, numero, nombreContacto, activo) VALUES (?, ?, ?, ?, 1)");
-        $stmtDatosCliente->execute([$nombre, $apellido, $contacto, $whatsapp]);
-        $clienteID = $conn->lastInsertId(); // Recupera el ID del último registro insertado
-        
+
+        // Verificar si el número de teléfono ya existe en datos_de_cliente
+        $stmtCheckCliente = $conn->prepare("SELECT clienteID FROM datos_de_cliente WHERE numero = ?");
+        $stmtCheckCliente->execute([$contacto]);
+        $clienteData = $stmtCheckCliente->fetch(PDO::FETCH_ASSOC);
+
+        if ($clienteData) {
+            $clienteID = $clienteData['clienteID'];
+        } else {
+            // Inserta los datos en datos_de_cliente con activo en 1
+            $stmtDatosCliente = $conn->prepare("INSERT INTO datos_de_cliente (nombre, apellido, numero, nombreContacto, activo) VALUES (?, ?, ?, ?, 1)");
+            $stmtDatosCliente->execute([$nombre, $apellido, $contacto, $whatsapp]);
+            $clienteID = $conn->lastInsertId(); // Recupera el ID del último registro insertado
+        }
+
         echo "El clienteID insertado es: " . $clienteID . "\n";
 
         // Asume un valor predeterminado para 'clave' si está vacío
@@ -49,12 +62,12 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         $stmtDatosCuenta->execute([$correo, $clave, $fechaCuenta, $id_streaming]);
         $idCuenta = $conn->lastInsertId(); // Recupera el ID del último registro insertado en datosCuenta
 
-        //DEBEN EN NULL / Fecha en pinPerfil
-        $debenFormatted = $deben ? $deben : '0000-00-00 00:00:00'; // Formato de fecha por defecto si 'deben' está vacío
+        // Convertir la fecha
+        $fechaPerfil = convertirFecha($deben);
 
         // Inserta los datos en la tabla perfil
         $stmtPerfil = $conn->prepare("INSERT INTO perfil (clienteID, idCuenta, id_streaming, customerMail, operador, pinPerfil, fechaPerfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $debenFormatted]);
+        $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
 
         // Confirma la transacción
         $conn->commit();
