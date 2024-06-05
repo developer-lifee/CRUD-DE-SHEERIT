@@ -5,6 +5,7 @@ $db_name = "estavi0_sheerit";
 $username = "estavi0_sheerit";
 $password = "26o6ssCOA^";
 
+
 try {
     $conn = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -13,7 +14,7 @@ try {
     exit;
 }
 
-function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto, $correo, $operador, $pinPerfil, $fechaPerfil) {
+function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben) {
     global $conn;
     
     $conn->beginTransaction();
@@ -34,7 +35,7 @@ function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto,
         
         // Inserta los datos en datos_de_cliente
         $stmtDatosCliente = $conn->prepare("INSERT INTO datos_de_cliente (nombre, apellido, numero, nombreContacto) VALUES (?, ?, ?, ?)");
-        $stmtDatosCliente->execute([$nombre, $apellido, $numero, $nombreContacto]);
+        $stmtDatosCliente->execute([$nombre, $apellido, $contacto, $whatsapp]);
         $clienteID = $conn->lastInsertId(); // Recupera el ID del último registro insertado
         
         echo "El clienteID insertado es: " . $clienteID . "\n";
@@ -48,7 +49,7 @@ function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto,
         }
 
         // Asume un valor predeterminado para 'clave' si está vacío
-        $clave = '0'; // Asume un valor predeterminado
+        $clave = $contraseña; // Usa el valor de contraseña del CSV
         $fechaCuenta = date('Y-m-d H:i:s'); // Usa la fecha y hora actual
         
         // Inserta los datos en datosCuenta
@@ -57,7 +58,11 @@ function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto,
 
         //DEBEN EN NULL / Fecha en pinPerfil
         // Prepara los datos para contabilidad
-        $debenFormatted = $fechaPerfil ? $fechaPerfil : '0000-00-00 00:00:00'; // Formato de fecha por defecto si 'deben' está vacío
+        $debenFormatted = $deben ? $deben : '0000-00-00 00:00:00'; // Formato de fecha por defecto si 'deben' está vacío
+
+        // Inserta los datos en la tabla perfil
+        $stmtPerfil = $conn->prepare("INSERT INTO perfil (clienteID, customerMail, operador, pinPerfil) VALUES (?, ?, ?, ?)");
+        $stmtPerfil->execute([$clienteID, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0]);
 
         // Inserta los datos en contabilidad si es necesario
         // $stmtContabilidad = $conn->prepare("INSERT INTO contabilidad (clienteID, deben, valorDeuda, valorDescuento) VALUES (?, ?, ?, ?)");
@@ -75,3 +80,5 @@ function insertarDatos($streaming, $nombre, $apellido, $numero, $nombreContacto,
         return false;
     }
 }
+
+?>

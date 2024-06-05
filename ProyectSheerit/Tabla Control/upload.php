@@ -12,11 +12,11 @@ function procesarDatosCSV($handle) {
             continue;
         }
         
-        if (count($row) == 9) {
+        if (count($row) == 11) {
             // Pasa los datos de la fila a la función insertarDatos
-            insertarDatos($row[0], $row[1], $row[2], $row[3], $row[4], $row[5], $row[6], $row[7], $row[8]);
+            insertarDatos($row[0], $row[1], $row[2], $row[3], $row[4], $row[5], $row[6], $row[7], $row[8], $row[9], $row[10]);
         } else {
-            echo "Error: La fila no contiene 9 elementos. Se encontraron " . count($row) . " elementos.\n";
+            echo "Error: La fila no contiene 11 elementos. Se encontraron " . count($row) . " elementos.\n";
         }
     }
 }
