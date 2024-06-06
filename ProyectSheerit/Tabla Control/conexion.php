@@ -5,17 +5,13 @@ $db_name = "estavi0_sheerit";
 $username = "estavi0_sheerit";
 $password = "26o6ssCOA^";
 
+
 try {
     $conn = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $exception) {
     echo "Error de conexión: " . $exception->getMessage();
     exit;
-}
-
-function convertirFecha($fecha) {
-    $date = DateTime::createFromFormat('m/d/Y', $fecha);
-    return $date ? $date->format('Y-m-d H:i:s') : '0000-00-00 00:00:00';
 }
 
 function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben) {
@@ -36,6 +32,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         }
         
         $id_streaming = $streamingData['id_streaming'];
+<<<<<<< HEAD
         $precio = $streamingData['precio'];
 
         // Verificar si el número de teléfono ya existe en datos_de_cliente
@@ -52,6 +49,14 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
             $clienteID = $conn->lastInsertId(); // Recupera el ID del último registro insertado
         }
 
+=======
+        
+        // Inserta los datos en datos_de_cliente con activo en 1
+        $stmtDatosCliente = $conn->prepare("INSERT INTO datos_de_cliente (nombre, apellido, numero, nombreContacto, activo) VALUES (?, ?, ?, ?, 1)");
+        $stmtDatosCliente->execute([$nombre, $apellido, $contacto, $whatsapp]);
+        $clienteID = $conn->lastInsertId(); // Recupera el ID del último registro insertado
+        
+>>>>>>> parent of 359d563 (conversion de fechas y manejo de varios datos un solo cliente)
         echo "El clienteID insertado es: " . $clienteID . "\n";
 
         // Verificar si el correo ya existe para el mismo id_streaming en datosCuenta
@@ -72,12 +77,12 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
             $idCuenta = $cuentaData['idCuenta'];
         }
 
-        // Convertir la fecha
-        $fechaPerfil = convertirFecha($deben);
+        //DEBEN EN NULL / Fecha en pinPerfil
+        $debenFormatted = $deben ? $deben : '0000-00-00 00:00:00'; // Formato de fecha por defecto si 'deben' está vacío
 
         // Inserta los datos en la tabla perfil
         $stmtPerfil = $conn->prepare("INSERT INTO perfil (clienteID, idCuenta, id_streaming, customerMail, operador, pinPerfil, fechaPerfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $debenFormatted]);
 
         // Calcular el valor de la deuda y el descuento
         $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM datosCuenta WHERE clienteID = ?");
