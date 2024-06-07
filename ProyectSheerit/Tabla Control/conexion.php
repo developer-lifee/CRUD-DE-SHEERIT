@@ -80,8 +80,8 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
 
         // Calcular el valor de la deuda y el descuento
-        $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM datosCuenta WHERE clienteID = ?");
-        $stmtContabilidad->execute([$clienteID]);
+        $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM datosCuenta WHERE correo = ?");
+        $stmtContabilidad->execute([$correo]);
         $cuentaCountData = $stmtContabilidad->fetch(PDO::FETCH_ASSOC);
         $numCuentas = $cuentaCountData['numCuentas'];
 

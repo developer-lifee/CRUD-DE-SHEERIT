@@ -1,3 +1,8 @@
 {
-    "liveServer.settings.port": 5501
+    "liveServer.settings.port": 5501,
+    "workbench.preferredDarkColorTheme": "Default Dark Modern",
+    "workbench.preferredHighContrastLightColorTheme": "Tomorrow Night Blue",
+    "workbench.preferredHighContrastColorTheme": "Monokai Dimmed",
+    "window.autoDetectColorScheme": true,
+    "workbench.preferredLightColorTheme": "Tomorrow Night Blue"
 }
