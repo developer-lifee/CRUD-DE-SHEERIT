@@ -58,7 +58,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 
             echo "El clienteID insertado es: " . $clienteID . "\n";
         } else {
-            $clienteID = NULL;
+            $clienteID = null;
         }
 
         // Verificar si el correo ya existe para el mismo id_streaming en datosCuenta
@@ -80,20 +80,29 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         }
 
         // Convertir la fecha
-        $fechaPerfil = $esClienteCompleto ? convertirFecha($deben) : null;
+        $fechaPerfil = convertirFecha($deben);
 
         // Verificar si los datos ya existen en la tabla perfil
-        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND id_streaming = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
-        $stmtCheckPerfil->execute([$idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE  id_streaming = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
+        $stmtCheckPerfil->execute([$id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
         $perfilData = $stmtCheckPerfil->fetch(PDO::FETCH_ASSOC);
 
         if ($perfilData) {
             // Si los datos ya existen, imprimir un mensaje y continuar
             echo "Datos duplicados encontrados en perfil: idCuenta = $idCuenta, id_streaming = $id_streaming, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
         } else {
+            // Calcular el precio unitario con el descuento aplicado
+            $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM perfil WHERE idCuenta = ?");
+            $stmtContabilidad->execute([$idCuenta]);
+            $cuentaCountData = $stmtContabilidad->fetch(PDO::FETCH_ASSOC);
+            $numCuentas = $cuentaCountData['numCuentas'];
+            
+            $valorDescuento = ($numCuentas > 0) ? ($numCuentas * 1000 / $numCuentas) : 0;
+            $precioUnitario = $precio - $valorDescuento;
+
             // Inserta los datos en la tabla perfil
-            $stmtPerfil = $conn->prepare("INSERT INTO perfil (clienteID, idCuenta, id_streaming, customerMail, operador, pinPerfil, fechaPerfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+            $stmtPerfil = $conn->prepare("INSERT INTO perfil (clienteID, idCuenta, id_streaming, customerMail, operador, pinPerfil, fechaPerfil, precioUnitario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil, $precioUnitario]);
         }
 
         if ($esClienteCompleto) {
@@ -125,4 +134,3 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 }
 
 ?>
-
