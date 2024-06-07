@@ -75,9 +75,19 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         // Convertir la fecha
         $fechaPerfil = convertirFecha($deben);
 
-        // Inserta los datos en la tabla perfil
-        $stmtPerfil = $conn->prepare("INSERT INTO perfil (clienteID, idCuenta, id_streaming, customerMail, operador, pinPerfil, fechaPerfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        // Verificar si los datos ya existen en la tabla perfil
+        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE clienteID = ? AND idCuenta = ? AND id_streaming = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
+        $stmtCheckPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        $perfilData = $stmtCheckPerfil->fetch(PDO::FETCH_ASSOC);
+
+        if ($perfilData) {
+            // Si los datos ya existen, imprimir un mensaje y continuar
+            echo "Datos duplicados encontrados en perfil: clienteID = $clienteID, idCuenta = $idCuenta, id_streaming = $id_streaming, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
+        } else {
+            // Inserta los datos en la tabla perfil
+            $stmtPerfil = $conn->prepare("INSERT INTO perfil (clienteID, idCuenta, id_streaming, customerMail, operador, pinPerfil, fechaPerfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        }
 
         // Calcular el valor de la deuda y el descuento
         $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM datosCuenta WHERE correo = ?");
