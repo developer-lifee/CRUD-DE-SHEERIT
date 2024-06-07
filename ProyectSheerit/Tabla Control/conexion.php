@@ -20,6 +20,9 @@ function convertirFecha($fecha) {
 
 function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben) {
     global $conn;
+
+    // Verificar si el registro es un cliente completo o solo un perfil disponible
+    $esClienteCompleto = !empty($nombre) && !empty($apellido) && !empty($contacto) && !empty($whatsapp);
     
     $conn->beginTransaction();
     
@@ -38,21 +41,25 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         $id_streaming = $streamingData['id_streaming'];
         $precio = $streamingData['precio'];
 
-        // Verificar si el número de teléfono ya existe en datos_de_cliente
-        $stmtCheckCliente = $conn->prepare("SELECT clienteID FROM datos_de_cliente WHERE numero = ?");
-        $stmtCheckCliente->execute([$contacto]);
-        $clienteData = $stmtCheckCliente->fetch(PDO::FETCH_ASSOC);
+        if ($esClienteCompleto) {
+            // Verificar si el número de teléfono ya existe en datos_de_cliente
+            $stmtCheckCliente = $conn->prepare("SELECT clienteID FROM datos_de_cliente WHERE numero = ?");
+            $stmtCheckCliente->execute([$contacto]);
+            $clienteData = $stmtCheckCliente->fetch(PDO::FETCH_ASSOC);
 
-        if ($clienteData) {
-            $clienteID = $clienteData['clienteID'];
+            if ($clienteData) {
+                $clienteID = $clienteData['clienteID'];
+            } else {
+                // Inserta los datos en datos_de_cliente con activo en 1
+                $stmtDatosCliente = $conn->prepare("INSERT INTO datos_de_cliente (nombre, apellido, numero, nombreContacto, activo) VALUES (?, ?, ?, ?, 1)");
+                $stmtDatosCliente->execute([$nombre, $apellido, $contacto, $whatsapp]);
+                $clienteID = $conn->lastInsertId(); // Recupera el ID del último registro insertado
+            }
+
+            echo "El clienteID insertado es: " . $clienteID . "\n";
         } else {
-            // Inserta los datos en datos_de_cliente con activo en 1
-            $stmtDatosCliente = $conn->prepare("INSERT INTO datos_de_cliente (nombre, apellido, numero, nombreContacto, activo) VALUES (?, ?, ?, ?, 1)");
-            $stmtDatosCliente->execute([$nombre, $apellido, $contacto, $whatsapp]);
-            $clienteID = $conn->lastInsertId(); // Recupera el ID del último registro insertado
+            $clienteID = NULL;
         }
-
-        echo "El clienteID insertado es: " . $clienteID . "\n";
 
         // Verificar si el correo ya existe para el mismo id_streaming en datosCuenta
         $stmtCheckCorreo = $conn->prepare("SELECT idCuenta FROM datosCuenta WHERE correo = ? AND id_streaming = ?");
@@ -73,34 +80,36 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         }
 
         // Convertir la fecha
-        $fechaPerfil = convertirFecha($deben);
+        $fechaPerfil = $esClienteCompleto ? convertirFecha($deben) : NULL;
 
         // Verificar si los datos ya existen en la tabla perfil
-        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE clienteID = ? AND idCuenta = ? AND id_streaming = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
-        $stmtCheckPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND id_streaming = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
+        $stmtCheckPerfil->execute([$idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
         $perfilData = $stmtCheckPerfil->fetch(PDO::FETCH_ASSOC);
 
         if ($perfilData) {
             // Si los datos ya existen, imprimir un mensaje y continuar
-            echo "Datos duplicados encontrados en perfil: clienteID = $clienteID, idCuenta = $idCuenta, id_streaming = $id_streaming, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
+            echo "Datos duplicados encontrados en perfil: idCuenta = $idCuenta, id_streaming = $id_streaming, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
         } else {
             // Inserta los datos en la tabla perfil
             $stmtPerfil = $conn->prepare("INSERT INTO perfil (clienteID, idCuenta, id_streaming, customerMail, operador, pinPerfil, fechaPerfil) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
         }
 
-        // Calcular el valor de la deuda y el descuento
-        $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM datosCuenta WHERE correo = ?");
-        $stmtContabilidad->execute([$correo]);
-        $cuentaCountData = $stmtContabilidad->fetch(PDO::FETCH_ASSOC);
-        $numCuentas = $cuentaCountData['numCuentas'];
+        if ($esClienteCompleto) {
+            // Calcular el valor de la deuda y el descuento
+            $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM datosCuenta WHERE correo = ?");
+            $stmtContabilidad->execute([$correo]);
+            $cuentaCountData = $stmtContabilidad->fetch(PDO::FETCH_ASSOC);
+            $numCuentas = $cuentaCountData['numCuentas'];
 
-        $valorDeuda = $numCuentas * $precio;
-        $valorDescuento = ($numCuentas - 1) * 1000; // Descuento de 1000 por cada cuenta adicional
+            $valorDeuda = $numCuentas * $precio;
+            $valorDescuento = ($numCuentas - 1) * 1000; // Descuento de 1000 por cada cuenta adicional
 
-        // Inserta los datos en contabilidad
-        $stmtContabilidad = $conn->prepare("INSERT INTO contabilidad (clienteID, deben, valorDeuda, valorDescuento) VALUES (?, ?, ?, ?)");
-        $stmtContabilidad->execute([$clienteID, $fechaPerfil, $valorDeuda, $valorDescuento]);
+            // Inserta los datos en contabilidad
+            $stmtContabilidad = $conn->prepare("INSERT INTO contabilidad (clienteID, deben, valorDeuda, valorDescuento) VALUES (?, ?, ?, ?)");
+            $stmtContabilidad->execute([$clienteID, convertirFecha($deben), $valorDeuda, $valorDescuento]);
+        }
 
         // Confirma la transacción
         $conn->commit();
