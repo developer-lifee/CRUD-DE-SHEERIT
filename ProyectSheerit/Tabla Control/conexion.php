@@ -15,7 +15,7 @@ try {
 
 function convertirFecha($fecha) {
     $date = DateTime::createFromFormat('m/d/Y', $fecha);
-    return $date ? $date->format('Y-m-d H:i:s') : '0000-00-00 00:00:00';
+    return $date ? $date->format('Y-m-d H:i:s') : null;
 }
 
 function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben) {
@@ -80,7 +80,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         }
 
         // Convertir la fecha
-        $fechaPerfil = $esClienteCompleto ? convertirFecha($deben) : NULL;
+        $fechaPerfil = $esClienteCompleto ? convertirFecha($deben) : null;
 
         // Verificar si los datos ya existen en la tabla perfil
         $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND id_streaming = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
@@ -125,3 +125,4 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 }
 
 ?>
+
