@@ -83,13 +83,13 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         $fechaPerfil = convertirFecha($deben);
 
         // Verificar si los datos ya existen en la tabla perfil
-        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE  id_streaming = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
-        $stmtCheckPerfil->execute([$id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
+        $stmtCheckPerfil->execute([$idCuenta, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
         $perfilData = $stmtCheckPerfil->fetch(PDO::FETCH_ASSOC);
 
         if ($perfilData) {
             // Si los datos ya existen, imprimir un mensaje y continuar
-            echo "Datos duplicados encontrados en perfil: idCuenta = $idCuenta, id_streaming = $id_streaming, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
+            echo "Datos duplicados encontrados en perfil: idCuenta = $idCuenta, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
         } else {
             // Calcular el precio unitario con el descuento aplicado
             $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM perfil WHERE idCuenta = ?");
@@ -107,8 +107,8 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 
         if ($esClienteCompleto) {
             // Calcular el valor de la deuda y el descuento
-            $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM datosCuenta WHERE correo = ?");
-            $stmtContabilidad->execute([$correo]);
+            $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM perfil WHERE idCuenta = ?");
+            $stmtContabilidad->execute([$idCuenta]);
             $cuentaCountData = $stmtContabilidad->fetch(PDO::FETCH_ASSOC);
             $numCuentas = $cuentaCountData['numCuentas'];
 
