@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Facturación Compra</title>
+    <style>
+        .rojo {
+            color: red;
+        }
+        .cafe {
+            color: brown;
+        }
+
+        /* CSS para el botón desplegable */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #2980b9;
+        }
+
+        .modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+}
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <a href="#" class="button">Sheer It</a>
+    </div>
+    <div class="filters">
+        <!-- Filtros disponibles -->
+        <input type="text" id="filtroCorreo" placeholder="Filtrar por Correo">
+        <button onclick="aplicarFiltros()">Aplicar Filtros</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Correo</th>
+                <th>Clave</th>
+                <th>Fecha de Cuenta</th>
+                <th>Nombre de Cuenta</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-datos">
+            <!-- Los datos se llenarán aquí mediante JavaScript -->
+        </tbody>
+    </table>
+     <div id="modalEditar" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Editar Cuenta</h2>
+        <form id="formEditarCuenta">
+            <label for="correo">Nuevo Correo Electrónico:</label>
+            <input type="text" id="correo" name="correo">
+            <label for="clave">Nueva Contraseña:</label>
+            <input type="password" id="clave" name="clave">
+            <!-- Agrega más campos según sea necesario -->
+            <button type="submit">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var datosOriginales = [];
+        $(document).ready(function() {
+            $.ajax({
+                url: 'cuentasAdmin.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log("Datos recibidos:", data); // Mensaje de depuración
+                    datosOriginales = data;
+                    mostrarDatos(datosOriginales);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error al obtener los datos:", error); // Mensaje de depuración
+                    alert("Error al obtener los datos");
+                }
+            });
+        });
+       
+        function mostrarDatos(data) {
+            var tabla = $("#tabla-datos");
+            tabla.empty(); // Limpia la tabla antes de agregar nuevos datos
+
+            $.each(data, function(index, row) {
+                console.log("Fila de datos:", row); // Mensaje de depuración
+                if (row && row.idCuenta !== undefined) {
+                    var htmlRow = `
+                    <tr>
+                        <td>${row.correo}</td>
+                        <td>${row.clave}</td>
+                        <td>${row.fechaCuenta}</td>
+                        <td>${row.nombre_cuenta}</td>
+                        <td>
+                            <button onclick="editarCuenta(${row.idCuenta})">Editar</button>
+                            <button onclick="eliminarCuenta(${row.idCuenta})">Eliminar</button>
+                        </td>
+                    </tr>
+                    `;
+                    tabla.append(htmlRow);
+                } else {
+                    console.warn("Fila de datos incompleta o sin ID de cuenta:", row); // Mensaje de depuración
+                }
+            });
+        }
+
+
+
+
+function eliminarCuenta(idCuenta) {
+    if (confirm("¿Estás seguro de que quieres eliminar esta cuenta?")) {
+        $.ajax({
+            url: 'editarEliminarCuentas.php',
+            type: 'POST',
+            dataType: 'json',
+            data: { action: "delete", idCuenta: idCuenta },
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    // Actualizar la tabla de datos u realizar cualquier otra acción necesaria
+                } else {
+                    alert("Error: " + response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Error en la solicitud: " + error);
+            }
+        });
+    }
+}
+
+function editarCuenta(idCuenta) {
+    // Muestra el modal de edición
+    $('#modalEditar').css('display', 'block');
+
+    // Configura el evento submit del formulario
+    $('#formEditarCuenta').submit(function(event) {
+        // Evita el envío del formulario por defecto
+        event.preventDefault();
+
+        // Obtiene los datos del formulario
+        var formData = {
+            action: "edit",
+            idCuenta: idCuenta,
+            correo: $('#correo').val(),
+            clave: $('#clave').val()
+            // Agrega más campos según sea necesario
+        };
+
+        // Envía la solicitud AJAX al servidor
+        $.ajax({
+            url: 'editarEliminarCuentas.php',
+            type: 'POST',
+            dataType: 'json',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    // Cierra el modal después de editar la cuenta
+                    $('#modalEditar').css('display', 'none');
+                    // Actualiza la tabla u otra acción después de la edición exitosa
+                } else {
+                    alert("Error: " + response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Error en la solicitud: " + error);
+            }
+        });
+    });
+}
+
+
+
+
+    </script>
+</body>
+</html>
