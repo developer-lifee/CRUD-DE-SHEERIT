@@ -1,15 +1,7 @@
 <?php
 
 
-$host = "localhost";
-$db_name = "estavi0_sheerit";
-$username = "estavi0_sheerit";
-$password = "26o6ssCOA^";
-
-
-try {
-    $conn = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    require '../../../../sys/conexion.php';
 
     // Primera consulta para obtener IDs de 'perfil' donde 'fechaPerfil' no es NULL-l
    $queryPerfil = "SELECT idCuenta, clienteID, id_streaming, fechaPerfil, metodoPago FROM perfil WHERE fechaPerfil IS NOT NULL";
