@@ -1,0 +1,74 @@
+/* Base styles for responsiveness */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0; /* Remove default margin for better control */
+}
+
+table {
+  width: 100%; /* Ensure table fills the available width */
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th, td {
+  padding: 10px; /* Adjust padding for smaller screens */
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #4ad0fc;
+  color: #fff;
+  font-weight: bold;
+}
+
+.button,
+input[type="submit"],
+input[type="file"] {
+  /* ... existing styles ... */
+}
+
+.copy-button {
+  /* ... existing styles ... */
+}
+
+/* Media queries for responsive adjustments */
+@media only screen and (max-width: 768px) { /* Adjust breakpoint as needed */
+  /* General adjustments for smaller screens */
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  thead {
+    display: none; /* Hide the table header on small screens */
+  }
+
+  tbody tr {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    font-weight: bold;
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Create pseudo-elements to display table header labels */
+  td::before {
+    content: attr(data-label);
+    flex-basis: 50%;
+    text-align: left;
+    background-color: #e0e4f3;
+    color: #000000;
+    padding: 5px;
+    border-radius: 5px;
+    border: 0.5px solid #333;
+    font-weight: normal; /* Distinguish from cell data */
+  }
+}
