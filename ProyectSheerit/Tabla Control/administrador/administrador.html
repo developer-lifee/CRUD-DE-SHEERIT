@@ -142,7 +142,7 @@
     var datosOriginales = [];
         $(document).ready(function() {
             $.ajax({
-                url: 'conexionAdmin.php', // Asegúrate de que este es el camino correcto a conexion2.php
+                url: '../controllers/clientesActivos.php', // Asegúrate de que este es el camino correcto a conexion2.php
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {

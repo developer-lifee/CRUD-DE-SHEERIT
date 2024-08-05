@@ -1,7 +1,7 @@
 <?php
 
-
     require '../../../../sys/conexion.php';
+
 
     // Primera consulta para obtener IDs de 'perfil' donde 'fechaPerfil' no es NULL-l
    $queryPerfil = "SELECT idCuenta, clienteID, id_streaming, fechaPerfil, metodoPago FROM perfil WHERE fechaPerfil IS NOT NULL";
@@ -49,9 +49,7 @@
    header('Content-Type: application/json');
 echo json_encode($infoCompleta);
 
-} catch (PDOException $exception) {
-    echo "Error de conexión: " . $exception->getMessage();
-    exit;
-}
+
+
 
 ?>
