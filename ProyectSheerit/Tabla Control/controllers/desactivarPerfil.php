@@ -1,14 +1,7 @@
 <?php
 // eliminar.php
 
-$host = "localhost";
-$db_name = "estavi0_sheerit";
-$username = "estavi0_sheerit";
-$password = "26o6ssCOA^";
-
-try {
-    $conn = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+require '../../../../sys/conexion.php';
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Asumiendo que 'clienteID' es la clave correcta para identificar el perfil a eliminar
@@ -25,7 +18,4 @@ try {
             echo "Perfil eliminado con éxito";
         }
     }
-} catch (PDOException $e) {
-    die("Error de conexión: " . $e->getMessage());
-}
 ?>

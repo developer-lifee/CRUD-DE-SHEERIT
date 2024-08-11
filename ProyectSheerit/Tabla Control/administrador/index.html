@@ -193,7 +193,7 @@ function mostrarDatos(data) {
   function eliminarPerfil(clienteID) {
             if(confirm("¿Estás seguro de que quieres eliminar este perfil?")) {
                 $.ajax({
-                    url: 'eliminarEditar.php',
+                    url: '../controllers/desactivarPerfil.php',
                     type: 'POST',
                     data: { clienteID: clienteID },
                     dataType: 'json',
