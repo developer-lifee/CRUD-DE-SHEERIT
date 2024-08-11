@@ -87,14 +87,12 @@ tr {
 }
 
 td {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 5px;
   font-weight: bold;
   border: none;
   border-bottom: 1px solid #ddd;
   position: relative;
+  word-wrap: break-word;
 }
 
 td::before {
@@ -103,6 +101,9 @@ td::before {
   left: 10px;
   font-weight: normal;
   color: #999;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 td:last-child {
@@ -112,5 +113,11 @@ td:last-child {
 td {
   padding-left: 50%;
   text-align: left;
+}
+
+/* Ajustes específicos para el correo */
+td:first-child {
+  word-wrap: break-word;
+  white-space: normal;
 }
 }
