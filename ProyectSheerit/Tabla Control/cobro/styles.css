@@ -25,11 +25,28 @@ th {
 .button,
 input[type="submit"],
 input[type="file"] {
-  /* ... existing styles ... */
+    background-color: #fff;
+    color: #4ad0fc;
+    border: 2px solid #4ad0fc;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
 }
 
 .copy-button {
-  /* ... existing styles ... */
+  display: block;
+  margin: 0 auto;
+  background-color: #4ad0fc;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+
 }
 
 /* Media queries for responsive adjustments */
