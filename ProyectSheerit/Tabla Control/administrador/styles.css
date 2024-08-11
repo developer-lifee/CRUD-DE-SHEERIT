@@ -71,53 +71,55 @@ input[type="file"]:hover {
 
 /* Estilos CSS para dispositivos móviles */
 @media only screen and (max-width: 600px) {
-table, thead, tbody, th, td, tr {
-  display: block;
-}
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
 
-thead tr {
-  display: none;
-}
+  thead tr {
+    display: none;
+  }
 
-tr {
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-}
+  tr {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+  }
 
-td {
-  padding: 5px;
-  font-weight: bold;
-  border: none;
-  border-bottom: 1px solid #ddd;
-  position: relative;
-  word-wrap: break-word;
-}
+  td {
+    padding: 5px;
+    border: none;
+    position: relative;
+    word-wrap: break-word;
+    text-align: left;
+  }
 
-td::before {
-  content: attr(data-label);
-  position: absolute;
-  left: 10px;
-  font-weight: normal;
-  color: #999;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 
-td:last-child {
-  border-bottom: none;
-}
+  td:last-child {
+    border-bottom: none;
+  }
 
-td {
-  padding-left: 50%;
-  text-align: left;
-}
+  td {
+    padding-left: 50%;
+    text-align: left;
+    font-weight: normal;
+  }
 
-/* Ajustes específicos para el correo */
-td:first-child {
-  word-wrap: break-word;
-  white-space: normal;
-}
+  /* Ajustes específicos para mostrar correctamente el correo y otros datos */
+  td:first-child {
+    word-wrap: break-word;
+    white-space: normal;
+    font-weight: bold;
+  }
 }
