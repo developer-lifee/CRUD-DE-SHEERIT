@@ -109,4 +109,4 @@ input[type="file"]:hover {
   td[data-label="Precio"]::before { content: "Precio"; }
   td[data-label="Método de Pago"]::before { content: "Método de Pago"; }
   td[data-label="Acciones"]::before { content: "Acciones"; }
-}
+
