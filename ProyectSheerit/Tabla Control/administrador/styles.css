@@ -69,44 +69,48 @@ input[type="file"]:hover {
   border: 2px solid #4ad0fc;
 }
 
+/* Estilos CSS para dispositivos móviles */
+@media only screen and (max-width: 600px) {
+table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
 
-  tr {
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    display: block;
-  }
+thead {
+  display: none;
+}
 
-  td {
-    padding: 10px;
-    border: none;
-    position: relative;
-    padding-left: 50%;
-    text-align: left;
-    word-wrap: break-word;
-  }
+tbody tr {
+  display: block;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+}
 
-  td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 10px;
-    font-weight: bold;
-    white-space: nowrap;
-  }
+td {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  font-weight: bold;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
 
-  td:last-child {
-    border-bottom: none;
-  }
+td::before {
+  content: attr(data-label);
+  flex-basis: 50%;
+  text-align: left;
+  background-color: #e0e4f3;
+  color: #000000;
+  padding: 5px;
+  border-radius: 5px;
+  border: 0.5px solid #333;
+}
 
-  td[data-label="Correo"]::before { content: "Correo"; }
-  td[data-label="Clave"]::before { content: "Clave"; }
-  td[data-label="Nombre"]::before { content: "Nombre"; }
-  td[data-label="Apellido"]::before { content: "Apellido"; }
-  td[data-label="Número"]::before { content: "Número"; }
-  td[data-label="Nombre Contacto"]::before { content: "Nombre Contacto"; }
-  td[data-label="Nombre Cuenta"]::before { content: "Nombre Cuenta"; }
-  td[data-label="Precio"]::before { content: "Precio"; }
-  td[data-label="Método de Pago"]::before { content: "Método de Pago"; }
-  td[data-label="Acciones"]::before { content: "Acciones"; }
-
+td:last-child {
+  border-bottom: none;
+}
+}
