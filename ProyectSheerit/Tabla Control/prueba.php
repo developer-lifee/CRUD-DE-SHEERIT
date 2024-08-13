@@ -1,16 +1,5 @@
 <?php
-$host = "localhost";
-$db_name = "id20971532_sheerit";
-$username = "id20971532_root";
-$password = "26o6ssCOA^";
-
-try {
-    $conn = new PDO("mysql:host={$host};dbname={$db_name}", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $exception) {
-    echo "Error de conexión: " . $exception->getMessage();
-    exit;
-}
+require '../../../sys/conexion.php';
 
 if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] == UPLOAD_ERR_OK) {
     $csvTempFile = $_FILES['csv_file']['tmp_name'];
@@ -47,7 +36,8 @@ if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] == UPLOAD_ERR_OK)
     echo "Error al subir el archivo CSV";
 }
 
-function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contrasena, $customerMail, $operador, $pinPerfil, $deben) {
+function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contrasena, $customerMail, $operador, $pinPerfil, $deben)
+{
     global $conn;
     $conn->beginTransaction();
 
@@ -63,4 +53,3 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         return false; // Error
     }
 }
-?>
