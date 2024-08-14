@@ -1,8 +1,10 @@
 <?php
 
-include 'conexion.php';
+require '../../../../sys/conexion.php';
+include 'cargaExcel.php';
 
-function procesarDatosCSV($handle) {
+function procesarDatosCSV($handle)
+{
     global $conn;
     // Ignorar el encabezado del archivo CSV
     fgetcsv($handle);
@@ -11,7 +13,7 @@ function procesarDatosCSV($handle) {
         if (empty(array_filter($row, 'trim'))) {
             continue;
         }
-        
+
         if (count($row) == 11) {
             // Pasa los datos de la fila a la función insertarDatos
             insertarDatos($row[0], $row[1], $row[2], $row[3], $row[4], $row[5], $row[6], $row[7], $row[8], $row[9], $row[10]);
@@ -47,5 +49,3 @@ if (isset($_FILES["csv_file"])) {
 } else {
     echo "No se seleccionó ningún archivo CSV para subir.";
 }
-
-?>
