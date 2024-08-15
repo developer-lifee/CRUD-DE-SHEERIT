@@ -2,35 +2,38 @@
 
 require '../../../../sys/conexion.php';
 
-function convertirFecha($fecha) {
+function convertirFecha($fecha)
+{
     $date = DateTime::createFromFormat('m/d/Y', $fecha);
     return $date ? $date->format('Y-m-d H:i:s') : null;
 }
 
-function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben) {
+function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben)
+{
     global $conn;
 
-    // Verificar si el registro es un cliente completo o solo un perfil disponible
-    $esClienteCompleto = !empty($nombre) && !empty($apellido) && !empty($contacto) && !empty($whatsapp);
-    
+    // Determinar si hay que manejar el perfil
+    $perfilEnUso = !empty($deben);
+
     $conn->beginTransaction();
-    
+
     try {
         // Busca el id_streaming en la tabla lista_maestra
         $stmtStreaming = $conn->prepare("SELECT id_streaming, precio FROM lista_maestra WHERE nombre_cuenta = ?");
         $stmtStreaming->execute([$streaming]);
         $streamingData = $stmtStreaming->fetch(PDO::FETCH_ASSOC);
-        
+
         if (!$streamingData) {
-            // Si no se encuentra el streaming, cancela la transacción
             $conn->rollBack();
             throw new Exception("Streaming no encontrado: $streaming");
         }
-        
+
         $id_streaming = $streamingData['id_streaming'];
         $precio = $streamingData['precio'];
 
-        if ($esClienteCompleto) {
+        $clienteID = null;
+
+        if ($perfilEnUso) {
             // Verificar si el número de teléfono ya existe en datos_de_cliente
             $stmtCheckCliente = $conn->prepare("SELECT clienteID FROM datos_de_cliente WHERE numero = ?");
             $stmtCheckCliente->execute([$contacto]);
@@ -46,8 +49,6 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
             }
 
             echo "El clienteID insertado es: " . $clienteID . "\n";
-        } else {
-            $clienteID = null;
         }
 
         // Verificar si el correo ya existe para el mismo id_streaming en datosCuenta
@@ -72,20 +73,19 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         $fechaPerfil = convertirFecha($deben);
 
         // Verificar si los datos ya existen en la tabla perfil
-        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND id_streaming = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
-        $stmtCheckPerfil->execute([$idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
+        $stmtCheckPerfil->execute([$idCuenta, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
         $perfilData = $stmtCheckPerfil->fetch(PDO::FETCH_ASSOC);
 
         if ($perfilData) {
-            // Si los datos ya existen, imprimir un mensaje y continuar
-            echo "Datos duplicados encontrados en perfil: idCuenta = $idCuenta, id_streaming = $id_streaming, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
+            echo "Datos duplicados encontrados en perfil: idCuenta = $idCuenta, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
         } else {
             // Calcular el precio unitario con el descuento aplicado
             $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM perfil WHERE idCuenta = ?");
             $stmtContabilidad->execute([$idCuenta]);
             $cuentaCountData = $stmtContabilidad->fetch(PDO::FETCH_ASSOC);
             $numCuentas = $cuentaCountData['numCuentas'];
-            
+
             $valorDescuento = ($numCuentas > 0) ? ($numCuentas * 1000 / $numCuentas) : 0;
             $precioUnitario = $precio - $valorDescuento;
 
@@ -94,7 +94,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
             $stmtPerfil->execute([$clienteID, $idCuenta, $id_streaming, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil, $precioUnitario]);
         }
 
-        if ($esClienteCompleto) {
+        if ($perfilEnUso) {
             // Calcular el valor de la deuda y el descuento
             $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM datosCuenta WHERE correo = ?");
             $stmtContabilidad->execute([$correo]);
@@ -111,7 +111,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 
         // Confirma la transacción
         $conn->commit();
-        
+
         echo "Todos los datos insertados correctamente.\n";
         return true;
     } catch (Exception $e) {
@@ -121,5 +121,3 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         return false;
     }
 }
-
-?>
