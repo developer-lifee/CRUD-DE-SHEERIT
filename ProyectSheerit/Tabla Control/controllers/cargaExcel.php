@@ -2,34 +2,33 @@
 
 require '../../../../sys/conexion.php';
 
-function convertirFecha($fecha)
-{
+function convertirFecha($fecha) {
     $date = DateTime::createFromFormat('m/d/Y', $fecha);
     return $date ? $date->format('Y-m-d H:i:s') : null;
 }
 
-function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben)
-{
+function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben) {
     global $conn;
 
     // Determinar si hay que manejar el perfil
     $perfilEnUso = !empty($deben);
-
+    
     $conn->beginTransaction();
-
+    
     try {
-        // Busca el id_streaming en la tabla lista_maestra
-        $stmtStreaming = $conn->prepare("SELECT id_streaming, precio FROM lista_maestra WHERE nombre_cuenta = ?");
+        // Busca el id_streaming y max_perfiles en la tabla lista_maestra
+        $stmtStreaming = $conn->prepare("SELECT id_streaming, precio, max_perfiles FROM lista_maestra WHERE nombre_cuenta = ?");
         $stmtStreaming->execute([$streaming]);
         $streamingData = $stmtStreaming->fetch(PDO::FETCH_ASSOC);
-
+        
         if (!$streamingData) {
             $conn->rollBack();
             throw new Exception("Streaming no encontrado: $streaming");
         }
-
+        
         $id_streaming = $streamingData['id_streaming'];
         $precio = $streamingData['precio'];
+        $maxPerfiles = $streamingData['max_perfiles'];
 
         $clienteID = null;
 
@@ -72,20 +71,37 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         // Convertir la fecha
         $fechaPerfil = convertirFecha($deben);
 
-        // Verificar si los datos ya existen en la tabla perfil
-        $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
-        $stmtCheckPerfil->execute([$idCuenta, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        // **Verificación de Duplicados en la Tabla 'perfil' con Excepción cuando deben es NULL**
+        if (!$perfilEnUso) {
+            $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil IS NULL");
+            $stmtCheckPerfil->execute([$idCuenta, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0]);
+        } else {
+            $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil = ?");
+            $stmtCheckPerfil->execute([$idCuenta, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0, $fechaPerfil]);
+        }
+
         $perfilData = $stmtCheckPerfil->fetch(PDO::FETCH_ASSOC);
 
         if ($perfilData) {
+            // Si los datos ya existen, imprimir un mensaje y no insertar
             echo "Datos duplicados encontrados en perfil: idCuenta = $idCuenta, customerMail = $customerMail, operador = $operador, pinPerfil = $pinPerfil, fechaPerfil = $fechaPerfil\n";
         } else {
+            // Verificar el límite de perfiles por cuenta utilizando max_perfiles
+            $stmtCheckMaxPerfiles = $conn->prepare("SELECT COUNT(*) AS totalPerfiles FROM perfil WHERE idCuenta = ?");
+            $stmtCheckMaxPerfiles->execute([$idCuenta]);
+            $totalPerfilesData = $stmtCheckMaxPerfiles->fetch(PDO::FETCH_ASSOC);
+            $totalPerfiles = $totalPerfilesData['totalPerfiles'];
+
+            if ($totalPerfiles >= $maxPerfiles) {
+                throw new Exception("Límite de perfiles alcanzado para idCuenta = $idCuenta. Máximo permitido: $maxPerfiles");
+            }
+
             // Calcular el precio unitario con el descuento aplicado
             $stmtContabilidad = $conn->prepare("SELECT COUNT(*) AS numCuentas FROM perfil WHERE idCuenta = ?");
             $stmtContabilidad->execute([$idCuenta]);
             $cuentaCountData = $stmtContabilidad->fetch(PDO::FETCH_ASSOC);
             $numCuentas = $cuentaCountData['numCuentas'];
-
+            
             $valorDescuento = ($numCuentas > 0) ? ($numCuentas * 1000 / $numCuentas) : 0;
             $precioUnitario = $precio - $valorDescuento;
 
@@ -111,7 +127,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 
         // Confirma la transacción
         $conn->commit();
-
+        
         echo "Todos los datos insertados correctamente.\n";
         return true;
     } catch (Exception $e) {
@@ -121,3 +137,15 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         return false;
     }
 }
+
+// Ejemplo de cómo procesar múltiples registros en un CSV
+$datosCSV = [
+    ['AMAZON', '', '', '', '', 'estivlol459@gmail.com', '331256', '', '', '', ''],
+    ['AMAZON', '', '', '', '', 'mguelstr+yyrnd@gmail.com', 'Moneti23@', '', '', '', ''],
+    // Otros registros...
+];
+
+foreach ($datosCSV as $fila) {
+    insertarDatos(...$fila);
+}
+?>
