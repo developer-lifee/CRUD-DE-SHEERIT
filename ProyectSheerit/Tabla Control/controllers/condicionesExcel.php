@@ -6,20 +6,30 @@ include 'cargaExcel.php';
 function procesarDatosCSV($handle)
 {
     global $conn;
+
     // Ignorar el encabezado del archivo CSV
     fgetcsv($handle);
+
+    $fila = 1; // Contador de filas para seguimiento
     while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+        echo "Procesando fila $fila...\n"; // Comentario para verificar qué fila se está procesando
+
         // Ignorar las filas vacías
         if (empty(array_filter($row, 'trim'))) {
+            echo "Fila $fila está vacía, saltando...\n";
+            $fila++;
             continue;
         }
 
         if (count($row) == 11) {
             // Pasa los datos de la fila a la función insertarDatos
+            echo "Fila $fila contiene 11 elementos, procesando datos...\n";
             insertarDatos($row[0], $row[1], $row[2], $row[3], $row[4], $row[5], $row[6], $row[7], $row[8], $row[9], $row[10]);
         } else {
-            echo "Error: La fila no contiene 11 elementos. Se encontraron " . count($row) . " elementos.\n";
+            echo "Error en fila $fila: La fila no contiene 11 elementos. Se encontraron " . count($row) . " elementos.\n";
         }
+
+        $fila++; // Incrementar contador de filas
     }
 }
 
@@ -37,6 +47,7 @@ if (isset($_FILES["csv_file"])) {
                 procesarDatosCSV($handle);
                 // Cerrar el archivo CSV
                 fclose($handle);
+                echo "Procesamiento del archivo CSV completado.\n";
             } else {
                 echo "Error al abrir el archivo CSV.";
             }
@@ -47,5 +58,5 @@ if (isset($_FILES["csv_file"])) {
         echo "Error al subir el archivo CSV. Código de error: " . $archivoCSV["error"];
     }
 } else {
-    echo "No se seleccionó ningún archivo CSV para subir.";
+    echo "No se ha proporcionado un archivo CSV.";
 }
