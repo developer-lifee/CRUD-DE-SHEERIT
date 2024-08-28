@@ -26,7 +26,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 
         if (!$streamingData) {
             $conn->rollBack();
-            throw new Exception("Streaming no encontrado: $streaming");
+            throw new Exception("Streaming no encontrado: $streaming \n");
         }
 
         $id_streaming = $streamingData['id_streaming'];
