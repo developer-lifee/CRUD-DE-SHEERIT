@@ -14,18 +14,15 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 
     $perfilEnUso = !empty($deben);
 
-    echo "Consultando información del servicio de streaming: $streaming...\n";
-
-    $conn->beginTransaction();
-
     try {
+        $conn->beginTransaction();
+
         // Busca el id_streaming y max_perfiles en la tabla lista_maestra
-        $stmtStreaming = $conn->prepare("SELECT id_streaming, precio, max_perfiles FROM lista_maestra WHERE nombre_cuenta = ?");
+        $stmtStreaming = $conn->prepare("SELECT id_streaming, precio, max_perfiles FROM lista_maestra WHERE nombre_cuenta = ? AND activo = 1");
         $stmtStreaming->execute([$streaming]);
         $streamingData = $stmtStreaming->fetch(PDO::FETCH_ASSOC);
 
         if (!$streamingData) {
-            $conn->rollBack();
             throw new Exception("Streaming no encontrado: $streaming \n");
         }
 
@@ -75,6 +72,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
 
         $fechaPerfil = convertirFecha($deben);
 
+        // Verificar si el perfil ya existe
         if (!$perfilEnUso) {
             $stmtCheckPerfil = $conn->prepare("SELECT * FROM perfil WHERE idCuenta = ? AND customerMail = ? AND operador = ? AND pinPerfil = ? AND fechaPerfil IS NULL");
             $stmtCheckPerfil->execute([$idCuenta, $customerMail, $operador, $pinPerfil ? $pinPerfil : 0]);
@@ -110,7 +108,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         return true;
     } catch (Exception $e) {
         $conn->rollBack();
-        echo "Error al insertar datos: " . $e->getMessage();
+        echo "Error al insertar datos: " . $e->getMessage() . "\n";
         return false;
     }
 }
