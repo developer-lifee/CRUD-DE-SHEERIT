@@ -18,7 +18,7 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         $conn->beginTransaction();
 
         // Busca el id_streaming y max_perfiles en la tabla lista_maestra
-        $stmtStreaming = $conn->prepare("SELECT id_streaming, precio, max_perfiles FROM lista_maestra WHERE nombre_cuenta = ? AND activo = 1");
+        $stmtStreaming = $conn->prepare("SELECT id_streaming, precio, max_perfiles FROM lista_maestra WHERE nombre_cuenta = ? ");
         $stmtStreaming->execute([$streaming]);
         $streamingData = $stmtStreaming->fetch(PDO::FETCH_ASSOC);
 
