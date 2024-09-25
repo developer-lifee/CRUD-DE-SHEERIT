@@ -8,78 +8,84 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="login">
-    <h1>VENTA</h1>
-    <div id="formContainer">
-        <!-- Formulario para verificar el número de teléfono -->
-         <form id="phoneForm" style="display: block;" action="telefono.php">
-            <input type="text" name="telefono" placeholder="Número de teléfono" required="required" />
-            <button type="button" class="btn btn-primary btn-block btn-large" onclick="savePhoneNumber()">Verificar</button>
-        </form>
-        
-        <!-- Formulario Si está registrado (oculto por defecto) -->
-
-        <form id="standardForm" style="display: none;" method="post" action="primerFormulario.php">
-            <h1>registrado</h1>
-            <select name="cuenta" id="cuenta" required>
-                <option value="" disabled selected>Selecciona una cuenta</option>
-                <option value="netflix">Netflix</option>
-                <option value="Crunchyroll">Crunchyroll</option>
-                <option value="disney">Disney</option>
-                <option value="hbo">Hbo</option>
-                <option value="paramount">Paramount</option>
-                <option value="prime">Prime</option>
-                <option value="star">Star</option>
-                <option value="spotify">Spotify</option>
-                <option value="youtube">Youtube</option>
-            </select>
-            <input type="hidden" name="telefonoHidden" id="telefonoHidden" value="">
-        
-            <select name="metodoPago" id="metodoPago" required>
-                <option value="" disabled selected>Selecciona un metodo de pago</option>
-                <option value="Nequi">Nequi</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Daviplata">Daviplata</option>
-                
-            </select>
-            <input type="date" name="fechaCompra" placeholder="Fecha Compra" required="required" />
+    <div class="login">
+        <h1>VENTA</h1>
+        <div id="formContainer">
+            <!-- Formulario para verificar el número de teléfono -->
+             <form id="phoneForm" style="display: block;" action="telefono.php">
+                <input type="text" name="telefono" placeholder="Número de teléfono" required="required" />
+                <button type="button" class="btn btn-primary btn-block btn-large" onclick="savePhoneNumber()">Verificar</button>
+            </form>
             
-            <input type="hidden" name="registrado" value="true">
-            
-            <button type="submit" class="btn btn-primary btn-block btn-large">Enviar</button>
-        </form>
-        <!-- Formulario alternativo (oculto por defecto) -->
-        <form id="alternativeForm" style="display: none;" method="post" action="segundoFormulario.php">
-            <h1>no registrado</h1>
-            <select name="cuenta" id="cuenta" required>
-                <option value="" disabled selected>Selecciona una cuenta</option>
-                <option value="netflix">Netflix</option>
-                <option value="Crunchyroll">Crunchyroll</option>
-                <option value="disney">Disney</option>
-                <option value="hbo">Hbo</option>
-                <option value="paramount">Paramount</option>
-                <option value="prime">Prime</option>
-                <option value="star">Star</option>
-                <option value="spotify">Spotify</option>
-                <option value="youtube">Youtube</option>
-            </select>
-            <select name="metodoPago" id="metodoPago" required>
-                <option value="" disabled selected>Selecciona un metodo de pago</option>
-                <option value="Nequi">Nequi</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Daviplata">Daviplata</option>
-                
-            </select>
-            <input type="text" name="nombre" placeholder="Nombre" required="required" />
-            <input type="text" name="apellido" placeholder="Apellido" required="required" />
-            <input type="text" name="nombreContacto" placeholder="Nombre Contacto" required="required" />
-            <input type="text" name="numero" placeholder="Numero" required="required" />
-            <input type="date" name="deben" placeholder="Deben" required="required" />
-        
-            <button type="submit" class="btn btn-primary btn-block btn-large">Enviar</button>
-        </form>
+            <!-- Formulario Si está registrado (oculto por defecto) -->
+            <form id="standardForm" style="display: none;" method="post" action="primerFormulario.php">
+                <h1>registrado</h1>
+                <div id="cuentasContainer">
+                    <div class="cuentaItem">
+                        <select name="cuenta[]" required>
+                            <option value="" disabled selected>Selecciona una cuenta</option>
+                            <option value="netflix">Netflix</option>
+                            <option value="Crunchyroll">Crunchyroll</option>
+                            <option value="disney">Disney</option>
+                            <option value="hbo">Hbo</option>
+                            <option value="paramount">Paramount</option>
+                            <option value="prime">Prime</option>
+                            <option value="star">Star</option>
+                            <option value="spotify">Spotify</option>
+                            <option value="youtube">Youtube</option>
+                        </select>
+                        <input type="date" name="fechaCompra[]" placeholder="Fecha Compra" required="required" />
+                    </div>
+                </div>
+                <button type="button" onclick="agregarCuenta()">Agregar otra cuenta</button>
+                <input type="hidden" name="telefonoHidden" id="telefonoHidden" value="">
+                <select name="metodoPago" id="metodoPago" required>
+                    <option value="" disabled selected>Selecciona un metodo de pago</option>
+                    <option value="Nequi">Nequi</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Daviplata">Daviplata</option>
+                </select>
+                <input type="hidden" name="registrado" value="true">
+                <button type="submit" class="btn btn-primary btn-block btn-large">Enviar</button>
+            </form>
+    
+            <!-- Formulario alternativo (oculto por defecto) -->
+            <form id="alternativeForm" style="display: none;" method="post" action="segundoFormulario.php">
+                <h1>no registrado</h1>
+                <div id="cuentasContainerAlt">
+                    <div class="cuentaItemAlt">
+                        <select name="cuenta[]" required>
+                            <option value="" disabled selected>Selecciona una cuenta</option>
+                            <option value="netflix">Netflix</option>
+                            <option value="Crunchyroll">Crunchyroll</option>
+                            <option value="disney">Disney</option>
+                            <option value="hbo">Hbo</option>
+                            <option value="paramount">Paramount</option>
+                            <option value="prime">Prime</option>
+                            <option value="star">Star</option>
+                            <option value="spotify">Spotify</option>
+                            <option value="youtube">Youtube</option>
+                        </select>
+                        <input type="date" name="fechaCompra[]" placeholder="Fecha Compra" required="required" />
+                    </div>
+                </div>
+                <button type="button" onclick="agregarCuentaAlt()">Agregar otra cuenta</button>
+                <select name="metodoPago" id="metodoPago" required>
+                    <option value="" disabled selected>Selecciona un metodo de pago</option>
+                    <option value="Nequi">Nequi</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Daviplata">Daviplata</option>
+                </select>
+                <input type="text" name="nombre" placeholder="Nombre" required="required" />
+                <input type="text" name="apellido" placeholder="Apellido" required="required" />
+                <input type="text" name="nombreContacto" placeholder="Nombre Contacto" required="required" />
+                <input type="text" name="numero" placeholder="Numero" required="required" />
+                <input type="date" name="deben" placeholder="Deben" required="required" />
+                <button type="submit" class="btn btn-primary btn-block btn-large">Enviar</button>
+            </form>
+        </div>
     </div>
-</div>
+    
 <script src="script.js"></script>
 </body>
 </html>

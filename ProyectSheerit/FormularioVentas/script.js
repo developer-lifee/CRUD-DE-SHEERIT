@@ -1,5 +1,20 @@
 var phoneNumber;
 
+function agregarCuenta() {
+    const cuentaItem = document.querySelector('.cuentaItem');
+    const cuentasContainer = document.getElementById('cuentasContainer');
+    const newCuentaItem = cuentaItem.cloneNode(true);
+    cuentasContainer.appendChild(newCuentaItem);
+}
+
+function agregarCuentaAlt() {
+    const cuentaItemAlt = document.querySelector('.cuentaItemAlt');
+    const cuentasContainerAlt = document.getElementById('cuentasContainerAlt');
+    const newCuentaItemAlt = cuentaItemAlt.cloneNode(true);
+    cuentasContainerAlt.appendChild(newCuentaItemAlt);
+}
+
+
 function savePhoneNumber() {
     var telefono = document.getElementsByName('telefono')[0].value; // Obtener el valor del número de teléfono del formulario
 
