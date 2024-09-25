@@ -11,6 +11,12 @@
     <div class="login">
         <h1>VENTA</h1>
         <div id="formContainer">
+            <!-- Formulario para verificar el número de teléfono -->
+            <form id="phoneForm" action="telefono.php" method="post">
+                <input type="text" name="telefono" placeholder="Número de teléfono" required="required" />
+                <button type="button" class="btn btn-primary btn-block btn-large" onclick="savePhoneNumber()">Verificar</button>
+            </form>
+
             <!-- Formulario Si está registrado (oculto por defecto) -->
             <form id="standardForm" style="display: none;" method="post" action="primerFormulario.php">
                 <h1>registrado</h1>
@@ -33,6 +39,13 @@
                 <div class="add-account-container">
                     <button type="button" class="add-account-btn" onclick="agregarCuenta()" title="Agregar otra cuenta">+</button>
                 </div>
+                <label for="meses">Cantidad de meses:</label>
+                <select name="meses" id="meses" onchange="calcularTotal()">
+                    <option value="1">1 mes</option>
+                    <option value="6">6 meses (7% de descuento)</option>
+                    <option value="12">12 meses (15% de descuento)</option>
+                </select>
+                <p id="total"></p>
                 <input type="hidden" name="telefonoHidden" id="telefonoHidden" value="">
                 <select name="metodoPago" id="metodoPago" required>
                     <option value="" disabled selected>Selecciona un metodo de pago</option>
@@ -43,7 +56,7 @@
                 <input type="hidden" name="registrado" value="true">
                 <button type="submit" class="btn btn-primary btn-block btn-large">Enviar</button>
             </form>
-    
+
             <!-- Formulario alternativo (oculto por defecto) -->
             <form id="alternativeForm" style="display: none;" method="post" action="segundoFormulario.php">
                 <h1>no registrado</h1>
@@ -66,6 +79,13 @@
                 <div class="add-account-container">
                     <button type="button" class="add-account-btn" onclick="agregarCuentaAlt()" title="Agregar otra cuenta">+</button>
                 </div>
+                <label for="meses">Cantidad de meses:</label>
+                <select name="meses" id="meses" onchange="calcularTotal()">
+                    <option value="1">1 mes</option>
+                    <option value="6">6 meses (7% de descuento)</option>
+                    <option value="12">12 meses (15% de descuento)</option>
+                </select>
+                <p id="total"></p>
                 <select name="metodoPago" id="metodoPago" required>
                     <option value="" disabled selected>Selecciona un metodo de pago</option>
                     <option value="Nequi">Nequi</option>
@@ -76,13 +96,12 @@
                 <input type="text" name="apellido" placeholder="Apellido" required="required" />
                 <input type="text" name="nombreContacto" placeholder="Nombre Contacto" required="required" />
                 <input type="text" name="numero" placeholder="Numero" required="required" />
-                <input type="hidden" name="deben" value="<?php echo date('Y-m-d'); ?>" />
+                <input type="hidden" name="deben" value="<?php echo date('Y-m-d', strtotime('+1 month')); ?>" />
                 <button type="submit" class="btn btn-primary btn-block btn-large">Enviar</button>
             </form>
         </div>
     </div>
-    
-    
+
 <script src="script.js"></script>
 </body>
 </html>

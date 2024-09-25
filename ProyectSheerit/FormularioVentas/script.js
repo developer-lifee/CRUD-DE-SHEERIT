@@ -13,7 +13,40 @@ function agregarCuentaAlt() {
     const newCuentaItemAlt = cuentaItemAlt.cloneNode(true);
     cuentasContainerAlt.appendChild(newCuentaItemAlt);
 }
+function calcularTotal() {
+    // Aquí agregarías la lógica para calcular el total basado en los precios de la base de datos
+    const meses = parseInt(document.getElementById('meses').value);
+    const cuentas = document.querySelectorAll('[name="cuenta[]"]');
+    
+    let total = 0;
+    let descuento = 0;
 
+    cuentas.forEach((cuenta, index) => {
+        const precio = obtenerPrecioCuenta(cuenta.value); // Función ficticia para obtener el precio desde la BD
+
+        if (index > 0) {
+            total += precio - 1000; // Descuento por cuenta adicional
+        } else {
+            total += precio;
+        }
+    });
+
+    if (meses === 6) {
+        descuento = 0.07; // 7% de descuento
+    } else if (meses === 12) {
+        descuento = 0.15; // 15% de descuento
+    }
+
+    total = total * meses * (1 - descuento);
+    total = Math.floor(total / 1000) * 1000; // Redondeo a la baja a miles
+
+    document.getElementById('total').innerText = `Total: $${total} COP`;
+}
+
+function obtenerPrecioCuenta(cuenta) {
+    // Aquí deberías obtener el precio desde la base de datos usando AJAX o precargar los precios
+    return 0; // Este es un valor de marcador de posición
+}
 
 
 function savePhoneNumber() {

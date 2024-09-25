@@ -1,73 +1,81 @@
 <?php
-// Incluir el archivo de conexión a la base de datos
 include 'conexion.php';
 
-// Verificar si se ha enviado el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-        // Obtener los valores enviados desde el formulario
         $nombre = $_POST["nombre"];
         $apellido = $_POST["apellido"];
         $numero = $_POST["numero"];
         $nombreContacto = $_POST["nombreContacto"];
         $metodoPago = $_POST["metodoPago"];
-        $fechaCompra = $_POST["fechaCompra"];
-        $cuenta = $_POST["cuenta"];
+        $meses = intval($_POST["meses"]);
+        $cuentas = $_POST["cuenta"];
 
-        // Verificar si el usuario está registrado
+        $clienteID = null;
+
         if ($_POST["registrado"] == "true") {
-            // Si está registrado, solo actualizar los datos existentes
-            $sql = "UPDATE datos_de_cliente SET nombre = :nombre, apellido = :apellido, numero = :numero, nombreContacto = :nombreContacto WHERE clienteID = :clienteID";
-
-            // Preparar la sentencia SQL
+            // Actualizar datos del cliente existente
+            $sql = "UPDATE datos_de_cliente SET nombre = :nombre, apellido = :apellido, nombreContacto = :nombreContacto WHERE clienteID = :clienteID";
             $stmt = $conn->prepare($sql);
-
-            // Vincular los valores a los parámetros de la consulta
             $stmt->bindParam(':nombre', $nombre);
             $stmt->bindParam(':apellido', $apellido);
-            $stmt->bindParam(':numero', $numero);
             $stmt->bindParam(':nombreContacto', $nombreContacto);
             $stmt->bindParam(':clienteID', $_POST["clienteID"]);
-
-            // Ejecutar la consulta
             $stmt->execute();
+
+            $clienteID = $_POST["clienteID"];
         } else {
-            // Si no está registrado, insertar nuevos datos
+            // Insertar nuevo cliente
             $sql = "INSERT INTO datos_de_cliente (nombre, apellido, numero, nombreContacto) VALUES (:nombre, :apellido, :numero, :nombreContacto)";
-
-            // Preparar la sentencia SQL
             $stmt = $conn->prepare($sql);
-
-            // Vincular los valores a los parámetros de la consulta
             $stmt->bindParam(':nombre', $nombre);
             $stmt->bindParam(':apellido', $apellido);
             $stmt->bindParam(':numero', $numero);
             $stmt->bindParam(':nombreContacto', $nombreContacto);
-
-            // Ejecutar la consulta
             $stmt->execute();
+
+            $clienteID = $conn->lastInsertId();
         }
 
-        // Realizar operaciones comunes para ambas situaciones
-        // Buscar el ID de cuenta según el nombre de cuenta seleccionado
-        $sql = "SELECT id_streaming FROM lista_maestra WHERE nombre_cuenta = :cuenta";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':cuenta', $cuenta);
-        $stmt->execute();
-        $idStreaming = $stmt->fetchColumn();
+        $total = 0;
 
-        // Insertar en lista_maestra si no existe
-        $sql = "INSERT IGNORE INTO lista_maestra (id_streaming, nombre_cuenta) VALUES (:idStreaming, :cuenta)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':idStreaming', $idStreaming);
-        $stmt->bindParam(':cuenta', $cuenta);
-        $stmt->execute();
+        foreach ($cuentas as $index => $cuenta) {
+            // Obtener el ID y precio de la cuenta seleccionada
+            $sql = "SELECT id_streaming, precio FROM lista_maestra WHERE nombre_cuenta = :cuenta";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':cuenta', $cuenta);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $idStreaming = $result['id_streaming'];
+            $precio = $result['precio'];
 
-        // Actualizar perfil según la lógica proporcionada
-        // ...
+            if ($index > 0) {
+                $precio -= 1000; // Descuento por cuenta adicional
+            }
 
-        // Mostrar mensaje de éxito
-        echo "Los datos se han insertado o actualizado correctamente.";
+            $total += $precio;
+
+            // Insertar el perfil asociado con el cliente y la cuenta de streaming
+            $fechaVencimiento = date('Y-m-d', strtotime("+$meses months"));
+            $sqlPerfil = "INSERT INTO perfil (clienteID, id_streaming, metodoPago, fechaPerfil) VALUES (:clienteID, :id_streaming, :metodoPago, :fechaPerfil)";
+            $stmtPerfil = $conn->prepare($sqlPerfil);
+            $stmtPerfil->bindParam(':clienteID', $clienteID);
+            $stmtPerfil->bindParam(':id_streaming', $idStreaming);
+            $stmtPerfil->bindParam(':metodoPago', $metodoPago);
+            $stmtPerfil->bindParam(':fechaPerfil', $fechaVencimiento);
+            $stmtPerfil->execute();
+        }
+
+        // Aplicar descuentos si es necesario
+        if ($meses == 6) {
+            $total *= 0.93; // 7% de descuento
+        } elseif ($meses == 12) {
+            $total *= 0.85; // 15% de descuento
+        }
+
+        $total = floor($total / 1000) * 1000; // Redondear a miles hacia abajo
+
+        echo "Total a pagar: $total COP. Los datos se han insertado o actualizado correctamente.";
     } catch (PDOException $exception) {
         echo "Error: " . $exception->getMessage();
     }
