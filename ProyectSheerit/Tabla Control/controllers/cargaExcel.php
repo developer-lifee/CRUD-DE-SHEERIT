@@ -8,7 +8,7 @@ function convertirFecha($fecha)
     return $date ? $date->format('Y-m-d H:i:s') : null;
 }
 
-function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $customerMail, $operador, $pinPerfil, $deben)
+function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $correo, $contraseña, $vencimiento, $customerMail, $operador, $pinPerfil, $deben)
 {
     global $conn;
 
@@ -57,9 +57,10 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
         $stmtCheckCorreo->execute([$correo, $id_streaming]);
         $cuentaData = $stmtCheckCorreo->fetch(PDO::FETCH_ASSOC);
 
+        $fechaCuenta = convertirFecha($vencimiento); // Convertir la fecha de vencimiento
+
         if (!$cuentaData) {
             $clave = $contraseña;
-            $fechaCuenta = date('Y-m-d H:i:s');
 
             $stmtDatosCuenta = $conn->prepare("INSERT INTO datosCuenta (correo, clave, fechaCuenta, id_streaming) VALUES (?, ?, ?, ?)");
             $stmtDatosCuenta->execute([$correo, $clave, $fechaCuenta, $id_streaming]);
@@ -67,7 +68,12 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
             echo "Nueva cuenta insertada: idCuenta = $idCuenta.\n";
         } else {
             $idCuenta = $cuentaData['idCuenta'];
-            echo "Cuenta existente encontrada: idCuenta = $idCuenta.\n";
+
+            // Actualizar fechaCuenta con la fecha de vencimiento
+            $stmtUpdateFechaCuenta = $conn->prepare("UPDATE datosCuenta SET fechaCuenta = ? WHERE idCuenta = ?");
+            $stmtUpdateFechaCuenta->execute([$fechaCuenta, $idCuenta]);
+
+            echo "Cuenta existente encontrada y actualizada: idCuenta = $idCuenta.\n";
         }
 
         $fechaPerfil = convertirFecha($deben);
