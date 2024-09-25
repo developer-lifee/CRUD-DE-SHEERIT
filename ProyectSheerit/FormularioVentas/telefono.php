@@ -1,8 +1,7 @@
 <?php
-// Conexión a la base de datos
 $host = "localhost";
-$db_name = "id20971532_sheerit";
-$username = "id20971532_root";
+$db_name = "estavi0_sheerit";
+$username = "estavi0_sheerit";
 $password = "26o6ssCOA^";
 
 try {
@@ -38,4 +37,3 @@ try {
     // Capturar cualquier error de conexión o de consulta
     echo json_encode(array("error" => "Error de conexión: " . $exception->getMessage()));
 }
-?>
