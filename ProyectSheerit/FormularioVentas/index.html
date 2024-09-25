@@ -11,12 +11,6 @@
     <div class="login">
         <h1>VENTA</h1>
         <div id="formContainer">
-            <!-- Formulario para verificar el número de teléfono -->
-             <form id="phoneForm" style="display: block;" action="telefono.php">
-                <input type="text" name="telefono" placeholder="Número de teléfono" required="required" />
-                <button type="button" class="btn btn-primary btn-block btn-large" onclick="savePhoneNumber()">Verificar</button>
-            </form>
-            
             <!-- Formulario Si está registrado (oculto por defecto) -->
             <form id="standardForm" style="display: none;" method="post" action="primerFormulario.php">
                 <h1>registrado</h1>
@@ -34,10 +28,11 @@
                             <option value="spotify">Spotify</option>
                             <option value="youtube">Youtube</option>
                         </select>
-                        <input type="date" name="fechaCompra[]" placeholder="Fecha Compra" required="required" />
                     </div>
                 </div>
-                <button type="button" onclick="agregarCuenta()">Agregar otra cuenta</button>
+                <div class="add-account-container">
+                    <button type="button" class="add-account-btn" onclick="agregarCuenta()" title="Agregar otra cuenta">+</button>
+                </div>
                 <input type="hidden" name="telefonoHidden" id="telefonoHidden" value="">
                 <select name="metodoPago" id="metodoPago" required>
                     <option value="" disabled selected>Selecciona un metodo de pago</option>
@@ -66,10 +61,11 @@
                             <option value="spotify">Spotify</option>
                             <option value="youtube">Youtube</option>
                         </select>
-                        <input type="date" name="fechaCompra[]" placeholder="Fecha Compra" required="required" />
                     </div>
                 </div>
-                <button type="button" onclick="agregarCuentaAlt()">Agregar otra cuenta</button>
+                <div class="add-account-container">
+                    <button type="button" class="add-account-btn" onclick="agregarCuentaAlt()" title="Agregar otra cuenta">+</button>
+                </div>
                 <select name="metodoPago" id="metodoPago" required>
                     <option value="" disabled selected>Selecciona un metodo de pago</option>
                     <option value="Nequi">Nequi</option>
@@ -80,11 +76,12 @@
                 <input type="text" name="apellido" placeholder="Apellido" required="required" />
                 <input type="text" name="nombreContacto" placeholder="Nombre Contacto" required="required" />
                 <input type="text" name="numero" placeholder="Numero" required="required" />
-                <input type="date" name="deben" placeholder="Deben" required="required" />
+                <input type="hidden" name="deben" value="<?php echo date('Y-m-d'); ?>" />
                 <button type="submit" class="btn btn-primary btn-block btn-large">Enviar</button>
             </form>
         </div>
     </div>
+    
     
 <script src="script.js"></script>
 </body>

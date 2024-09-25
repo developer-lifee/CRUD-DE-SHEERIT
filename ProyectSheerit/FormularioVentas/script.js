@@ -15,6 +15,7 @@ function agregarCuentaAlt() {
 }
 
 
+
 function savePhoneNumber() {
     var telefono = document.getElementsByName('telefono')[0].value; // Obtener el valor del número de teléfono del formulario
 
