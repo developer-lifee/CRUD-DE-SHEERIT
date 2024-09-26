@@ -1,3 +1,2 @@
 <?php
-require '../../../../sys/conexion.php';
-?>
+require '../../../sys/conexion.php';
