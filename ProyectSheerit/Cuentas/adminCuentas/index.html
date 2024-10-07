@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Facturación Compra</title>
+</head>
+<body>
+    <div class="banner">
+        <a href="#" class="button">Sheer It</a>
+    </div>
+    <div class="filters">
+        <input type="text" id="filtroCorreo" placeholder="Filtrar por Correo">
+        <button onclick="aplicarFiltros()">Aplicar Filtros</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Correo</th>
+                <th>Clave</th>
+                <th>Fecha de Cuenta</th>
+                <th>Nombre de Cuenta</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-datos">
+        </tbody>
+    </table>
+    <div id="modalEditar" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Cuenta</h2>
+            <form id="formEditarCuenta">
+                <label for="correo">Nuevo Correo Electrónico:</label>
+                <input type="text" id="correo" name="correo">
+                <label for="clave">Nueva Contraseña:</label>
+                <input type="password" id="clave" name="clave">
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+    <button id="toggle-dark-mode">Toggle Dark Mode</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./scripts.js"></script>
+</body>
+</html>
