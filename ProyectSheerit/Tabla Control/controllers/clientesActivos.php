@@ -1,6 +1,6 @@
 <?php
 
-    require '../../../../sys/conexion.php';
+require '../../../../sys/conexion.php';
 
 
     // Primera consulta para obtener IDs de 'perfil' donde 'fechaPerfil' no es NULL-l
