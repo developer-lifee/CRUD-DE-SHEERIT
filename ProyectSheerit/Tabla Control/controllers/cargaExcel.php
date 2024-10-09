@@ -17,6 +17,16 @@ function insertarDatos($streaming, $nombre, $apellido, $whatsapp, $contacto, $co
     try {
         $conn->beginTransaction();
 
+        // Eliminar datos existentes
+        $stmtDeletePerfil = $conn->prepare("DELETE FROM perfil WHERE customerMail = ? AND operador = ?");
+        $stmtDeletePerfil->execute([$customerMail, $operador]);
+
+        $stmtDeleteCuenta = $conn->prepare("DELETE FROM datosCuenta WHERE correo = ? AND id_streaming = (SELECT id_streaming FROM lista_maestra WHERE nombre_cuenta = ?)");
+        $stmtDeleteCuenta->execute([$correo, $streaming]);
+
+        $stmtDeleteCliente = $conn->prepare("DELETE FROM datos_de_cliente WHERE numero = ?");
+        $stmtDeleteCliente->execute([$contacto]);
+
         // Busca el id_streaming y max_perfiles en la tabla lista_maestra
         $stmtStreaming = $conn->prepare("SELECT id_streaming, precio, max_perfiles FROM lista_maestra WHERE nombre_cuenta = ? ");
         $stmtStreaming->execute([$streaming]);
