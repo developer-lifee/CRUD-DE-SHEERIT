@@ -21,7 +21,7 @@ function procesarDatosCSV($handle)
             continue;
         }
 
-        if (count($row) == 11) {
+        if (count($row) == 12) {
             // Pasa los datos de la fila a la función insertarDatos
             echo "Fila $fila contiene 12 elementos, procesando datos...\n";
             insertarDatos($row[0], $row[1], $row[2], $row[3], $row[4], $row[5], $row[6], $row[7], $row[8], $row[9], $row[10], $row[11]);
