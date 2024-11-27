@@ -120,9 +120,11 @@ function calcularTotalAlt() {
             total += precioCuenta;
         });
 
+        // Aplicar descuentos por cantidad de cuentas
         const descuento = (cuentas.length - 1) * 1000;
         total -= descuento;
 
+        // Aplicar descuento por cantidad de meses
         if (meses === 6) {
             total *= 0.93;
         } else if (meses === 12) {
