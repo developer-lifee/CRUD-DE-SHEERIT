@@ -48,23 +48,30 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 });
 
-function copiarDatos(nombreCuenta, correo, clave, perfil, fechaPerfil) {
-    let fechaFormateada = 'Fecha no disponible';
-    if (fechaPerfil && fechaPerfil !== 'Fecha no disponible') {
-        // Replace space with 'T' for ISO format
-        const fechaISO = fechaPerfil.replace(' ', 'T');
-        const fecha = new Date(fechaISO);
-
-        if (!isNaN(fecha)) {
-            const opcionesFecha = { day: 'numeric', month: 'long', year: 'numeric' };
-            fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFecha);
+function copiarDatos(nombreCuenta, correo, clave, perfil, fecha) {
+    // Verifica si la fecha existe y formatéala, si no, usa un mensaje por defecto
+    let fechaFormateada = "Fecha no disponible";
+    if (fecha && fecha !== 'Fecha no disponible') {
+        const fechaObj = new Date(fecha.replace(' ', 'T'));
+        if (!isNaN(fechaObj)) {
+            fechaFormateada = fechaObj.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
         }
     }
 
-    const texto = `${nombreCuenta.toUpperCase()}\n\n*CORREO:* ${correo}\n*CONTRASEÑA:* ${clave}\n*PERFIL:* ${perfil}\n\n*EL SERVICIO VENCERÁ EL DÍA: ${fechaFormateada}`;
-    navigator.clipboard.writeText(texto).then(() => {
-        alert("Datos copiados al portapapeles");
-    }).catch(() => {
-        alert("Error al copiar los datos");
-    });
+    // Verifica si el perfil existe, si no, usa un valor por defecto
+    const perfilMostrar = perfil || "No especificado";
+
+    const texto = `${nombreCuenta.toUpperCase()}\n\n` +
+                 `*CORREO:* ${correo}\n` +
+                 `*CONTRASEÑA:* ${clave}\n` +
+                 `*PERFIL:* ${perfilMostrar}\n\n` +
+                 `*EL SERVICIO VENCERÁ EL DÍA:* ${fechaFormateada}`;
+
+    navigator.clipboard.writeText(texto)
+        .then(() => alert("Datos copiados al portapapeles"))
+        .catch(() => alert("Error al copiar los datos"));
 }
