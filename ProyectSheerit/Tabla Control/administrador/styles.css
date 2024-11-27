@@ -69,6 +69,32 @@ input[type="file"]:hover {
   border: 2px solid #4ad0fc;
 }
 
+.header-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.search-input {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin-top: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    z-index: 1; /* Asegúrate de que aparezca encima */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
 /* Estilos CSS para dispositivos móviles */
 @media only screen and (max-width: 600px) {
   table, thead, tbody, th, td, tr {

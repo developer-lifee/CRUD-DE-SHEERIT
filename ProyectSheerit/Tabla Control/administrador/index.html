@@ -20,36 +20,80 @@
     <div class="banner">
         <a href="../controllers/cargaExcel.php" class="button">Sheer It</a>
     </div>
-<div class="filters">
-    <!-- Filtros disponibles -->
-    <input type="text" id="filtroNombre" placeholder="Filtrar por Nombre">
-    <input type="text" id="filtroCuenta" placeholder="Filtrar por Nombre de Cuenta">
-    <input type="text" id="filtroMetodoPago" placeholder="Filtrar por Método de Pago">
-    <input type="text" id="filtroCorreo" placeholder="Filtrar por Correo">
 
-    <button onclick="aplicarFiltros()">Aplicar Filtros</button>
-</div>
-
-
-    <table>
-        <thead>
-  <tr>
-    <th>Correo <input type="text" onkeyup="filtrarColumna(this, 0)"></th>
-    <th>Clave <input type="text" onkeyup="filtrarColumna(this, 1)"></th>
-    <th>Nombre <input type="text" onkeyup="filtrarColumna(this, 2)"></th>
-    <th>Apellido <input type="text" onkeyup="filtrarColumna(this, 3)"></th>
-    <th>Número <input type="text" onkeyup="filtrarColumna(this, 4)"></th>
-    <th>Nombre Contacto <input type="text" onkeyup="filtrarColumna(this, 5)"></th>
-    <th>Nombre Cuenta <input type="text" onkeyup="filtrarColumna(this, 6)"></th>
-    <th>Precio <input type="text" onkeyup="filtrarColumna(this, 7)"></th>
-    <th>Método de Pago <input type="text" onkeyup="filtrarColumna(this, 8)"></th>
-    <th>Acciones</th>
-  </tr>
-</thead>
-        <tbody id="tabla-datos">
-            <!-- Los datos se llenarán aquí mediante JavaScript -->
-        </tbody>
-    </table>
+<table>
+    <thead>
+        <tr>
+            <th>
+                <div class="header-cell">
+                    Correo
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(0, this.value)" placeholder="Buscar Correo">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
+                    Clave
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(1, this.value)" placeholder="Buscar Clave">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
+                    Nombre
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(2, this.value)" placeholder="Buscar Nombre">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
+                    Apellido
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(3, this.value)" placeholder="Buscar Apellido">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
+                    Número
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(4, this.value)" placeholder="Buscar Número">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
+                    Nombre Contacto
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(5, this.value)" placeholder="Buscar Nombre Contacto">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
+                    Nombre Cuenta
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(6, this.value)" placeholder="Buscar Nombre Cuenta">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
+                    Precio
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(7, this.value)" placeholder="Buscar Precio">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
+                    Método de Pago
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(8, this.value)" placeholder="Buscar Método de Pago">
+                </div>
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tabla-datos">
+        <!-- Los datos se llenarán aquí mediante JavaScript -->
+    </tbody>
+</table>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -73,34 +117,28 @@ function mostrarDatos(data) {
     var tabla = $("#tabla-datos");
     tabla.empty(); // Limpia la tabla antes de agregar nuevos datos
 
+    // Obtenemos los nombres de los encabezados
+    var headers = [];
+    $("th").each(function() {
+        headers.push($(this).text());
+    });
+
     $.each(data, function(index, row) {
         if (row !== null) {
-            // Calcula los días restantes para el próximo pago
-            var fechaPerfil = new Date(row.fechaPerfil);
-            var fechaVencimiento = new Date(fechaPerfil.getTime() + 30*24*60*60*1000);
-            var hoy = new Date();
-            var diferenciaTiempo = fechaVencimiento.getTime() - hoy.getTime();
-            var diasRestantes = Math.ceil(diferenciaTiempo / (1000 * 3600 * 24));
+            // Construye cada fila de la tabla
+            var htmlRow = '<tr>';
+            htmlRow += '<td data-label="' + headers[0] + '">' + row.correo + '</td>';
+            htmlRow += '<td data-label="' + headers[1] + '">' + row.clave + '</td>';
+            htmlRow += '<td data-label="' + headers[2] + '">' + row.nombre + '</td>';
+            htmlRow += '<td data-label="' + headers[3] + '">' + row.apellido + '</td>';
+            htmlRow += '<td data-label="' + headers[4] + '">' + row.numero + '</td>';
+            htmlRow += '<td data-label="' + headers[5] + '">' + row.nombreContacto + '</td>';
+            htmlRow += '<td data-label="' + headers[6] + '">' + row.nombre_cuenta + '</td>';
+            htmlRow += '<td data-label="' + headers[7] + '">' + row.precio + '</td>';
+            htmlRow += '<td data-label="' + headers[8] + '">' + row.metodoPago + '</td>';
+            htmlRow += '<td data-label="' + headers[9] + '"><button onclick="eliminarPerfil(' + row.clienteID + ')">Eliminar</button></td>';
+            htmlRow += '</tr>';
 
-            // Aplica los estilos según los días restantes
-            var color = diasRestantes <= 0 ? "red" : diasRestantes <= 7 ? "yellow" : "none";
-            var estiloDias = `style="background-color: ${color};"`;
-
-            var htmlRow = `
-            <tr>
-                <td>${row.correo}</td>
-                <td>${row.clave}</td>
-                <td>${row.nombre}</td>
-                <td>${row.apellido}</td>
-                <td>${row.numero}</td>
-                <td>${row.nombreContacto}</td>
-                <td>${row.nombre_cuenta}</td>
-                <td>${row.precio}</td>
-               
-                <td>${row.metodoPago}</td>
-                <td><button onclick="eliminarPerfil(${row.clienteID})">Eliminar</button></td>
-            </tr>
-            `;
             tabla.append(htmlRow);
         }
     });
@@ -156,9 +194,32 @@ function aplicarFiltros() {
     mostrarDatos(datosFiltrados);
 }
 
+function toggleSearch(iconElement) {
+    var searchInput = iconElement.nextElementSibling;
+    if (searchInput.style.display === "block") {
+        searchInput.style.display = "none";
+    } else {
+        searchInput.style.display = "block";
+        searchInput.focus();
+    }
+}
 
+function filtrarTabla(colIndex, filtro) {
+    filtro = filtro.toLowerCase();
+    var rows = document.querySelectorAll("#tabla-datos tr");
 
-
+    rows.forEach(row => {
+        var cell = row.querySelectorAll("td")[colIndex];
+        if (cell) {
+            var textoCelda = cell.textContent.toLowerCase();
+            if (textoCelda.includes(filtro)) {
+                row.style.display = ""; // muestra la fila
+            } else {
+                row.style.display = "none"; // oculta la fila
+            }
+        }
+    });
+}
 
     </script>
       <script src="./script.js"></script>
