@@ -89,11 +89,7 @@ input[type="file"]:hover {
   td {
     padding: 5px 10px;
     padding-left: 50%;
-    font-weight: bold;
-    border: none;
-    border-bottom: 1px solid #ddd;
     position: relative;
-    word-wrap: break-word;
     text-align: left;
   }
 
@@ -101,11 +97,13 @@ input[type="file"]:hover {
     content: attr(data-label);
     position: absolute;
     left: 10px;
+    top: 0;
+    width: 45%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-weight: normal;
     color: #999;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
   }
 
   td:last-child {
