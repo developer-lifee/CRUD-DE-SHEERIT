@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function() {
     // Obtén el ID del usuario de los parámetros de la URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -27,6 +26,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         <td>${cuenta.nombre_cuenta}</td>
                         <td>${cuenta.precio}</td>
                         <td>${cuenta.metodoPago}</td>
+                        <td>
+                            <button onclick="copiarDatos('${cuenta.nombre_cuenta}', '${cuenta.correo}', '${cuenta.clave}', '${cuenta.nombre}', '${cuenta.fechaPerfil}')">Copiar</button>
+                        </td>
                     `;
                     tabla.appendChild(row);
                 });
@@ -39,3 +41,12 @@ document.addEventListener("DOMContentLoaded", function() {
             alert("Hubo un error al cargar los detalles del usuario.");
         });
 });
+
+function copiarDatos(nombreCuenta, correo, clave, perfil, fechaPerfil) {
+    const texto = `NOMBRE DE CUENTA\n\n*CORREO:* ${correo}\n*CONTRASEÑA:* ${clave}\n*PERFIL:* ${perfil}\n\n*EL SERVICIO VENCERA EL DIA: ${fechaPerfil}`;
+    navigator.clipboard.writeText(texto).then(() => {
+        alert("Datos copiados al portapapeles");
+    }).catch(() => {
+        alert("Error al copiar los datos");
+    });
+}
