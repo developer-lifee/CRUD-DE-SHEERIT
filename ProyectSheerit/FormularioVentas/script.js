@@ -79,6 +79,7 @@ function eliminarCuentaAlt() {
 }
 
 function calcularTotal() {
+    // Adjust the function to calculate the total based on the current date and selected months
     fetchPrices().then(precios => {
         const meses = parseInt(document.getElementById('meses').value) || 1;
         const cuentas = document.querySelectorAll('#cuentasContainer select[name="cuenta[]"]');
@@ -109,6 +110,7 @@ function calcularTotal() {
 }
 
 function calcularTotalAlt() {
+    // Adjust the function to calculate the total for the alternative form
     fetchPrices().then(precios => {
         const meses = parseInt(document.getElementById('mesesAlt').value) || 1;
         const cuentas = document.querySelectorAll('#cuentasContainerAlt select[name="cuenta[]"]');

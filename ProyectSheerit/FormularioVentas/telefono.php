@@ -20,8 +20,8 @@ $count = $row['count'];
 // Verificar el resultado de la consulta y devolver una respuesta al cliente
 if ($count > 0) {
     // Si se encontró el número en la base de datos
-    echo json_encode(array("registrado" => true));
+    echo json_encode(array("registrado" => true, "telefono" => $contactoNumero));
 } else {
     // Si el número no se encontró en la base de datos
-    echo json_encode(array("registrado" => false));
+    echo json_encode(array("registrado" => false, "telefono" => $contactoNumero));
 }

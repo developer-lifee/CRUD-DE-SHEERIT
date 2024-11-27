@@ -12,10 +12,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["numero"])) {
         $apellido = $_POST["apellido"];
         $nombreContacto = $_POST["nombreContacto"];
         $numero = $_POST["numero"];
-        $deben = $_POST["deben"];
         $metodoPago = $_POST["metodoPago"]; // Asumiendo que tienes un input en tu formulario para el metodoPago
         $meses = intval($_POST["meses"]);
         $total = 0;
+
+        // Calcular la 'fechaPerfil' basada en la fecha actual y los meses seleccionados
+        $fechaPerfil = new DateTime('now', new DateTimeZone('America/Bogota'));
+        $fechaPerfil->modify("+$meses months");
+        $fechaPerfilFormatted = $fechaPerfil->format('Y-m-d H:i:s');
 
         // Insertar el nuevo cliente en la base de datos
         $sqlInsertCliente = "INSERT INTO datos_de_cliente (nombre, apellido, nombreContacto, numero, activo) VALUES (:nombre, :apellido, :nombreContacto, :numero, 1)";
@@ -57,11 +61,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["numero"])) {
 
                 if ($idPerfil) {
                     // Actualizar perfil con los datos del nuevo cliente
-                    $sqlUpdatePerfil = "UPDATE perfil SET clienteID = :clienteID, metodoPago = :metodoPago, fechaPerfil = :deben WHERE idPerfil = :idPerfil";
+                    $sqlUpdatePerfil = "UPDATE perfil SET clienteID = :clienteID, metodoPago = :metodoPago, fechaPerfil = :fechaPerfil WHERE idPerfil = :idPerfil";
                     $stmtUpdatePerfil = $conn->prepare($sqlUpdatePerfil);
                     $stmtUpdatePerfil->bindParam(':clienteID', $clienteID);
                     $stmtUpdatePerfil->bindParam(':metodoPago', $metodoPago);
-                    $stmtUpdatePerfil->bindParam(':deben', $deben);
+                    $stmtUpdatePerfil->bindParam(':fechaPerfil', $fechaPerfilFormatted);
                     $stmtUpdatePerfil->bindParam(':idPerfil', $idPerfil);
                     $stmtUpdatePerfil->execute();
 

@@ -30,30 +30,5 @@
         </table>
     </div>
     <script src="./detallesUsuario.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const clienteID = urlParams.get('clienteID');
-
-            fetch(`obtenerDetallesUsuario.php?clienteID=${clienteID}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('usuario-nombre').textContent = data.nombre;
-                    const cuentas = data.cuentas;
-                    const tbody = document.getElementById('tabla-cuentas');
-                    cuentas.forEach(cuenta => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${cuenta.correo}</td>
-                            <td>${cuenta.clave}</td>
-                            <td>${cuenta.nombre_cuenta}</td>
-                            <td>${cuenta.precio}</td>
-                            <td>${cuenta.metodo_pago}</td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                });
-        });
-    </script>
 </body>
 </html>

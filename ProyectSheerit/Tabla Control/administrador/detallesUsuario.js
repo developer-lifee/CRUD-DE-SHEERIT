@@ -27,7 +27,13 @@ document.addEventListener("DOMContentLoaded", function() {
                         <td>${cuenta.precio}</td>
                         <td>${cuenta.metodoPago}</td>
                         <td>
-                            <button onclick="copiarDatos('${cuenta.nombre_cuenta}', '${cuenta.correo}', '${cuenta.clave}', '${cuenta.nombre}', '${cuenta.fechaPerfil}')">Copiar</button>
+                            <button onclick="copiarDatos(
+                                '${cuenta.nombre_cuenta}', 
+                                '${cuenta.correo}', 
+                                '${cuenta.clave}', 
+                                '${cuenta.nombre_perfil}', 
+                                '${cuenta.fecha_vencimiento}'
+                            )">Copiar</button>
                         </td>
                     `;
                     tabla.appendChild(row);

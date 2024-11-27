@@ -98,7 +98,6 @@
                 <input type="text" name="apellido" placeholder="Apellido" required="required" />
                 <input type="text" name="nombreContacto" placeholder="Nombre Contacto" required="required" />
                 <input type="text" name="numero" placeholder="Número de teléfono" required="required" />
-                <input type="hidden" name="deben" value="<?php echo date('Y-m-d', strtotime('+1 month')); ?>" />
                 <button type="submit" class="btn">Enviar</button>
             </form>
         </div>
@@ -106,6 +105,40 @@
 
     <script src="script.js"></script>
     <script>
+        function savePhoneNumber() {
+            const telefonoInput = document.querySelector('#phoneForm input[name="telefono"]');
+            const telefono = telefonoInput.value;
+
+            fetch('telefono.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `telefono=${encodeURIComponent(telefono)}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.registrado) {
+                    // Show registered user form
+                    document.getElementById('phoneForm').style.display = 'none';
+                    document.getElementById('standardForm').style.display = 'block';
+                    document.getElementById('telefonoHidden').value = telefono;
+                    calcularTotal();
+                } else {
+                    // Show new user form
+                    document.getElementById('phoneForm').style.display = 'none';
+                    document.getElementById('alternativeForm').style.display = 'block';
+                    // Pre-fill the phone number
+                    document.querySelector('#alternativeForm input[name="numero"]').value = telefono;
+                    calcularTotalAlt();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un error al verificar el número de teléfono.');
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             fetch('obtener_precios.php')
                 .then(response => response.json())
