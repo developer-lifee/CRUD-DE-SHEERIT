@@ -14,6 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["numero"])) {
         $numero = $_POST["numero"];
         $deben = $_POST["deben"];
         $metodoPago = $_POST["metodoPago"]; // Asumiendo que tienes un input en tu formulario para el metodoPago
+        $meses = intval($_POST["meses"]);
+        $total = 0;
 
         // Insertar el nuevo cliente en la base de datos
         $sqlInsertCliente = "INSERT INTO datos_de_cliente (nombre, apellido, nombreContacto, numero, activo) VALUES (:nombre, :apellido, :nombreContacto, :numero, 1)";
@@ -28,6 +30,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["numero"])) {
         $clienteID = $conn->lastInsertId();
 
         foreach ($cuentas as $cuenta) {
+            // Obtener el precio de la cuenta desde la base de datos
+            $sqlPrecio = "SELECT id_streaming, precio FROM lista_maestra WHERE nombre_cuenta = :cuenta";
+            $stmtPrecio = $conn->prepare($sqlPrecio);
+            $stmtPrecio->bindParam(':cuenta', $cuenta);
+            $stmtPrecio->execute();
+            $resultado = $stmtPrecio->fetch(PDO::FETCH_ASSOC);
+
+            $idStreaming = $resultado['id_streaming'];
+            $precioCuenta = $resultado['precio'];
+            $total += $precioCuenta;
+
             // Verificar si existe un perfil para el streaming seleccionado y fechaPerfil es NULL
             $sql = "SELECT id_streaming FROM lista_maestra WHERE nombre_cuenta = :cuenta";
             $stmt = $conn->prepare($sql);
@@ -60,10 +73,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["numero"])) {
                 echo "No se encontró una cuenta de streaming que coincida con la proporcionada: " . $cuenta . "<br />";
             }
         }
+
+        // Aplicar descuento por cantidad de cuentas
+        $descuento = (count($cuentas) - 1) * 1000;
+        $total -= $descuento;
+
+        // Aplicar descuento por cantidad de meses
+        if ($meses === 6) {
+            $total *= 0.93;
+        } elseif ($meses === 12) {
+            $total *= 0.85;
+        }
+
+        $total *= $meses;
+        $total = floor($total / 1000) * 1000;
+
+        echo "El total a pagar es: $total COP";
     } catch (PDOException $exception) {
         echo "Error: " . $exception->getMessage();
     }
 } else {
     echo "No se recibieron todos los datos necesarios a través del formulario.";
 }
-?>

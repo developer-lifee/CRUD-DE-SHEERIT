@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["telefonoHidden"])) {
     try {
         // Obtener los valores enviados desde el formulario
         $cuentas = $_POST["cuenta"];
-        $fechasCompra = $_POST["fechaCompra"];
+        $meses = intval($_POST["meses"]);
         $metodoPago = $_POST["metodoPago"];
         $telefonoHidden = $_POST["telefonoHidden"];
 
@@ -21,8 +21,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["telefonoHidden"])) {
         $clienteID = $stmtClienteID->fetchColumn();
 
         if ($clienteID) {
-            foreach ($cuentas as $index => $cuenta) {
-                $fechaCompra = $fechasCompra[$index];
+            $total = 0;
+            foreach ($cuentas as $cuenta) {
+                // Obtener el precio de la cuenta desde la base de datos
+                $sqlPrecio = "SELECT id_streaming, precio FROM lista_maestra WHERE nombre_cuenta = :cuenta";
+                $stmtPrecio = $conn->prepare($sqlPrecio);
+                $stmtPrecio->bindParam(':cuenta', $cuenta);
+                $stmtPrecio->execute();
+                $resultado = $stmtPrecio->fetch(PDO::FETCH_ASSOC);
+
+                $idStreaming = $resultado['id_streaming'];
+                $precioCuenta = $resultado['precio'];
+                $total += $precioCuenta;
+
+                // Calcular la fecha de vencimiento (fechaPerfil) basada en la cantidad de meses seleccionados
+                $fechaPerfil = new DateTime('now', new DateTimeZone('America/Bogota'));
+                $fechaPerfil->modify("+$meses months");
+                $fechaPerfilFormatted = $fechaPerfil->format('Y-m-d H:i:s');
 
                 // Proceder con la actualización del perfil solo si el clienteID existe
                 $sql = "SELECT id_streaming FROM lista_maestra WHERE nombre_cuenta = :cuenta";
@@ -40,19 +55,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["telefonoHidden"])) {
 
                 if ($idPerfil) {
                     // Actualizar perfil con los datos proporcionados
-                    $sqlUpdatePerfil = "UPDATE perfil SET clienteID = :clienteID, metodoPago = :metodoPago, fechaPerfil = :fechaCompra WHERE idPerfil = :idPerfil";
+                    $sqlUpdatePerfil = "UPDATE perfil SET clienteID = :clienteID, metodoPago = :metodoPago, fechaPerfil = :fechaPerfil WHERE idPerfil = :idPerfil";
                     $stmtUpdatePerfil = $conn->prepare($sqlUpdatePerfil);
                     $stmtUpdatePerfil->bindParam(':clienteID', $clienteID);
                     $stmtUpdatePerfil->bindParam(':metodoPago', $metodoPago);
-                    $stmtUpdatePerfil->bindParam(':fechaCompra', $fechaCompra);
+                    $stmtUpdatePerfil->bindParam(':fechaPerfil', $fechaPerfilFormatted);
                     $stmtUpdatePerfil->bindParam(':idPerfil', $idPerfil);
                     $stmtUpdatePerfil->execute();
 
                     echo "Perfil actualizado exitosamente para la cuenta: " . $cuenta . "<br />";
+                    // Prepare data for clipboard
+                    $clipboardData = "nombre de cuenta: $cuenta\nCORREO: Sheerstreaming@gmail.com\nCONTRASEÑA: 1294363\nPERFIL: ana\nEL SERVICIO VENCERA EL DIA: " . $fechaPerfil->format('d \d\e F \d\e Y');
+                    echo "<script>
+                        navigator.clipboard.writeText(`$clipboardData`).then(function() {
+                            console.log('Datos copiados al portapapeles');
+                        }, function(err) {
+                            console.error('Error al copiar al portapapeles: ', err);
+                        });
+                        window.location.href = 'detallesUsuario.php?clienteID=$clienteID';
+                    </script>";
                 } else {
                     echo "No se encontró un perfil válido para actualizar en la cuenta: " . $cuenta . "<br />";
                 }
             }
+
+            // Aplicar descuento por cantidad de cuentas
+            $descuento = (count($cuentas) - 1) * 1000;
+            $total -= $descuento;
+
+            // Aplicar descuento por cantidad de meses
+            if ($meses === 6) {
+                $total *= 0.93;
+            } elseif ($meses === 12) {
+                $total *= 0.85;
+            }
+
+            $total *= $meses;
+            $total = floor($total / 1000) * 1000;
+
+            echo "El total a pagar es: $total COP";
         } else {
             echo "El número de teléfono proporcionado no coincide con ningún clienteID existente.";
         }
@@ -62,4 +103,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["telefonoHidden"])) {
 } else {
     echo "No se recibió el número de teléfono esperado o el formulario no fue enviado correctamente.";
 }
-?>

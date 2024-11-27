@@ -1,11 +1,22 @@
 var phoneNumber;
 
+function fetchPrices() {
+    return fetch('obtener_precios.php')
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Error al obtener precios:', error);
+            return {};
+        });
+}
+
 function agregarCuenta() {
     const cuentaItem = document.querySelector('.cuentaItem');
     const cuentasContainer = document.getElementById('cuentasContainer');
     const newCuentaItem = cuentaItem.cloneNode(true);
     cuentasContainer.appendChild(newCuentaItem);
-    newCuentaItem.querySelector('.cuenta-select').addEventListener('change', calcularTotal);
+    newCuentaItem.querySelector('select[name="cuenta[]"]').addEventListener('change', calcularTotal);
+    newCuentaItem.querySelector('input[name="fechaCompra[]"]').value = new Date().toISOString().split('T')[0]; // Set current date
+    calcularTotal();
 }
 
 function agregarCuentaAlt() {
@@ -13,7 +24,9 @@ function agregarCuentaAlt() {
     const cuentasContainerAlt = document.getElementById('cuentasContainerAlt');
     const newCuentaItemAlt = cuentaItemAlt.cloneNode(true);
     cuentasContainerAlt.appendChild(newCuentaItemAlt);
-    newCuentaItemAlt.querySelector('.cuenta-select').addEventListener('change', calcularTotalAlt);
+    newCuentaItemAlt.querySelector('select[name="cuenta[]"]').addEventListener('change', calcularTotalAlt);
+    newCuentaItemAlt.querySelector('input[name="fechaCompra[]"]').value = new Date().toISOString().split('T')[0]; // Set current date
+    calcularTotalAlt();
 }
 
 function eliminarCuenta() {
@@ -33,59 +46,61 @@ function eliminarCuentaAlt() {
 }
 
 function calcularTotal() {
-    const meses = parseInt(document.getElementById('meses').value);
-    const cuentas = document.querySelectorAll('#cuentasContainer .cuenta-select');
-    let total = 0;
+    fetchPrices().then(precios => {
+        const meses = parseInt(document.getElementById('meses').value) || 1;
+        const cuentas = document.querySelectorAll('#cuentasContainer select[name="cuenta[]"]');
+        let total = 0;
 
-    cuentas.forEach((selectElement, index) => {
-        const precio = parseInt(selectElement.selectedOptions[0].getAttribute('data-precio'));
-        if (!isNaN(precio)) {
-            if (index > 0) {
-                total += precio - 1000; // Descuento por cuenta adicional
-            } else {
-                total += precio;
-            }
+        cuentas.forEach((selectElement, index) => {
+            const cuenta = selectElement.value;
+            const precioCuenta = parseInt(precios[cuenta]) || 0;
+            total += precioCuenta;
+        });
+
+        // Aplicar descuentos por cantidad de cuentas
+        const descuento = (cuentas.length - 1) * 1000;
+        total -= descuento;
+
+        // Aplicar descuento por cantidad de meses
+        if (meses === 6) {
+            total *= 0.93;
+        } else if (meses === 12) {
+            total *= 0.85;
         }
+
+        total *= meses;
+        total = Math.floor(total / 1000) * 1000;
+
+        document.getElementById('total').innerText = `Total: $${total} COP`;
     });
-
-    if (meses === 6) {
-        total *= 0.93; // 7% de descuento
-    } else if (meses === 12) {
-        total *= 0.85; // 15% de descuento
-    }
-
-    total *= meses;
-    total = Math.floor(total / 1000) * 1000; // Redondear hacia abajo a miles
-
-    document.getElementById('total').innerText = `Total: $${total} COP`;
 }
 
 function calcularTotalAlt() {
-    const meses = parseInt(document.getElementById('mesesAlt').value);
-    const cuentas = document.querySelectorAll('#cuentasContainerAlt .cuenta-select');
-    let total = 0;
+    fetchPrices().then(precios => {
+        const meses = parseInt(document.getElementById('mesesAlt').value) || 1;
+        const cuentas = document.querySelectorAll('#cuentasContainerAlt select[name="cuenta[]"]');
+        let total = 0;
 
-    cuentas.forEach((selectElement, index) => {
-        const precio = parseInt(selectElement.selectedOptions[0].getAttribute('data-precio'));
-        if (!isNaN(precio)) {
-            if (index > 0) {
-                total += precio - 1000; // Descuento por cuenta adicional
-            } else {
-                total += precio;
-            }
+        cuentas.forEach((selectElement, index) => {
+            const cuenta = selectElement.value;
+            const precioCuenta = parseInt(precios[cuenta]) || 0;
+            total += precioCuenta;
+        });
+
+        const descuento = (cuentas.length - 1) * 1000;
+        total -= descuento;
+
+        if (meses === 6) {
+            total *= 0.93;
+        } else if (meses === 12) {
+            total *= 0.85;
         }
+
+        total *= meses;
+        total = Math.floor(total / 1000) * 1000;
+
+        document.getElementById('totalAlt').innerText = `Total: $${total} COP`;
     });
-
-    if (meses === 6) {
-        total *= 0.93; // 7% de descuento
-    } else if (meses === 12) {
-        total *= 0.85; // 15% de descuento
-    }
-
-    total *= meses;
-    total = Math.floor(total / 1000) * 1000; // Redondear hacia abajo a miles
-
-    document.getElementById('totalAlt').innerText = `Total: $${total} COP`;
 }
 
 function savePhoneNumber() {
@@ -136,7 +151,9 @@ document.getElementById('phoneForm').addEventListener('submit', function(event) 
 // Añade un event listener para calcular el total cuando se cambia la selección de cuenta o meses
 document.getElementById('meses').addEventListener('change', calcularTotal);
 document.getElementById('mesesAlt').addEventListener('change', calcularTotalAlt);
-document.querySelectorAll('.cuenta-select').forEach(select => {
+document.querySelectorAll('#cuentasContainer select[name="cuenta[]"]').forEach(select => {
     select.addEventListener('change', calcularTotal);
+});
+document.querySelectorAll('#cuentasContainerAlt select[name="cuenta[]"]').forEach(select => {
     select.addEventListener('change', calcularTotalAlt);
 });

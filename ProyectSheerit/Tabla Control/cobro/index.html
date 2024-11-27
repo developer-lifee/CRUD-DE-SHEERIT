@@ -1,4 +1,3 @@
-
 NO TOCAR
 <!DOCTYPE html>
 <html lang="es">
@@ -178,7 +177,7 @@ function mostrarDatos(data) {
             <tr>
                 <td>${row.correo}</td>
                 <td>${row.clave}</td>
-                <td>${row.nombre}</td>
+                <td><a href="detallesUsuario.php?clienteID=${row.clienteID}">${row.nombre}</a></td>
                 <td>${row.apellido}</td>
                 <td>${row.numero}</td>
                 <td>${row.nombreContacto}</td>
