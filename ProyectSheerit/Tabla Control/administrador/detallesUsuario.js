@@ -31,8 +31,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                 '${cuenta.nombre_cuenta}', 
                                 '${cuenta.correo}', 
                                 '${cuenta.clave}', 
-                                '${cuenta.perfil || cuenta.nombre}', 
-                                '${cuenta.fechaPerfil || cuenta.fecha_vencimiento}'
+                                '${cuenta.nombre}', 
+                                '${cuenta.fechaPerfil || 'Fecha no disponible'}'
                             )">Copiar</button>
                         </td>
                     `;
@@ -49,9 +49,17 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function copiarDatos(nombreCuenta, correo, clave, perfil, fechaPerfil) {
-    const fecha = new Date(fechaPerfil);
-    const opcionesFecha = { day: 'numeric', month: 'long', year: 'numeric' };
-    const fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFecha);
+    let fechaFormateada = 'Fecha no disponible';
+    if (fechaPerfil && fechaPerfil !== 'Fecha no disponible') {
+        // Replace space with 'T' for ISO format
+        const fechaISO = fechaPerfil.replace(' ', 'T');
+        const fecha = new Date(fechaISO);
+
+        if (!isNaN(fecha)) {
+            const opcionesFecha = { day: 'numeric', month: 'long', year: 'numeric' };
+            fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFecha);
+        }
+    }
 
     const texto = `${nombreCuenta.toUpperCase()}\n\n*CORREO:* ${correo}\n*CONTRASEÑA:* ${clave}\n*PERFIL:* ${perfil}\n\n*EL SERVICIO VENCERÁ EL DÍA: ${fechaFormateada}`;
     navigator.clipboard.writeText(texto).then(() => {

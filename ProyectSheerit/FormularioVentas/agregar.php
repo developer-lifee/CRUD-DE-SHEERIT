@@ -14,6 +14,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $clienteID = null;
 
         if ($_POST["registrado"] == "true") {
+            // Obtener el nombre del cliente
+            $nombreCliente = $_POST["nombre"];
+
             // Actualizar datos del cliente existente
             $sql = "UPDATE datos_de_cliente SET nombre = :nombre, apellido = :apellido, nombreContacto = :nombreContacto WHERE clienteID = :clienteID";
             $stmt = $conn->prepare($sql);
@@ -80,4 +83,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . $exception->getMessage();
     }
 }
-?>

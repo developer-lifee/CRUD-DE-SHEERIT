@@ -64,8 +64,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["telefonoHidden"])) {
                     $stmtUpdatePerfil->execute();
 
                     echo "Perfil actualizado exitosamente para la cuenta: " . $cuenta . "<br />";
+                    // Obtener el nombre del cliente mediante clienteID
+                    $sqlNombre = "SELECT nombre FROM datos_de_cliente WHERE clienteID = :clienteID";
+                    $stmtNombre = $conn->prepare($sqlNombre);
+                    $stmtNombre->bindParam(':clienteID', $clienteID);
+                    $stmtNombre->execute();
+                    $nombrePerfil = $stmtNombre->fetchColumn();
+
                     // Prepare data for clipboard
-                    $clipboardData = "nombre de cuenta: $cuenta\nCORREO: Sheerstreaming@gmail.com\nCONTRASEÑA: 1294363\nPERFIL: ana\nEL SERVICIO VENCERA EL DIA: " . $fechaPerfil->format('d \d\e F \d\e Y');
+                    $clipboardData = "nombre de cuenta: $cuenta\nCORREO: Sheerstreaming@gmail.com\nCONTRASEÑA: 1294363\nPERFIL: $nombrePerfil\nEL SERVICIO VENCERA EL DIA: " . $fechaPerfil->format('d \d\e F \d\e Y');
                     echo "<script>
                         navigator.clipboard.writeText(`$clipboardData`).then(function() {
                             console.log('Datos copiados al portapapeles');

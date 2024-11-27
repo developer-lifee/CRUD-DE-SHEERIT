@@ -69,7 +69,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["numero"])) {
                     $stmtUpdatePerfil->bindParam(':idPerfil', $idPerfil);
                     $stmtUpdatePerfil->execute();
 
+                    // Obtener el nombre del cliente mediante clienteID
+                    $sqlNombre = "SELECT nombre FROM datos_de_cliente WHERE clienteID = :clienteID";
+                    $stmtNombre = $conn->prepare($sqlNombre);
+                    $stmtNombre->bindParam(':clienteID', $clienteID);
+                    $stmtNombre->execute();
+                    $nombrePerfil = $stmtNombre->fetchColumn();
+
                     echo "Perfil actualizado con los datos del nuevo cliente, método de pago y fecha asignada para la cuenta: " . $cuenta . "<br />";
+                    // Prepare data for clipboard
+                    $clipboardData = "nombre de cuenta: $cuenta\nCORREO: Sheerstreaming@gmail.com\nCONTRASEÑA: 1294363\nPERFIL: $nombrePerfil\nEL SERVICIO VENCERA EL DIA: " . $fechaPerfil->format('d \d\e F \d\e Y');
+                    echo "<script>
+                        navigator.clipboard.writeText(`$clipboardData`).then(function() {
+                            console.log('Datos copiados al portapapeles');
+                        }, function(err) {
+                            console.error('Error al copiar al portapapeles: ', err);
+                        });
+                        window.location.href = '../Tabla Control/administrador/detallesUsuario.html?usuarioID=$clienteID';
+                    </script>";
                 } else {
                     echo "No se encontró un perfil válido para asociar con el nuevo cliente en la cuenta: " . $cuenta . "<br />";
                 }
