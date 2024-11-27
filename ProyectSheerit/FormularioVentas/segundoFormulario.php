@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["numero"])) {
 
         echo "El total a pagar es: $total COP";
         echo "<script>
-            window.location.href = '../Tabla Control/administrador/detallesUsuario.php?clienteID=$clienteID';
+            window.location.href = '../Tabla Control/administrador/detallesUsuario.html?usuarioID=$clienteID';
         </script>";
     } catch (PDOException $exception) {
         echo "Error: " . $exception->getMessage();
