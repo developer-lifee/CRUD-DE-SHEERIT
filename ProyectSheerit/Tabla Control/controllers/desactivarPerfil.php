@@ -10,6 +10,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $conn->beginTransaction();
 
+        // Check if the profile is already inactive
+        $sqlCheckStatus = "SELECT estado FROM perfil WHERE perfilID = :perfilID";
+        $stmtCheckStatus = $conn->prepare($sqlCheckStatus);
+        $stmtCheckStatus->bindParam(':perfilID', $perfilID);
+        $stmtCheckStatus->execute();
+        $estado = $stmtCheckStatus->fetchColumn();
+
+        if ($estado === 'inactivo') {
+            echo "El perfil ya está inactivo.";
+            $conn->rollBack();
+            exit;
+        }
+
         // Actualizar el estado del perfil y la fecha de desactivación
         $sql = "UPDATE perfil SET estado = 'inactivo', fechaDesactivacion = NOW(), clienteID = NULL WHERE perfilID = :perfilID";
         $stmt = $conn->prepare($sql);

@@ -44,10 +44,15 @@ if (isset($_FILES["csv_file"])) {
             // Procesar el archivo CSV subido
             $archivoCSV = $_FILES['csv_file']['tmp_name'];
             if (($handle = fopen($archivoCSV, "r")) !== FALSE) {
-                procesarDatosCSV($handle);
-                // Cerrar el archivo CSV
-                fclose($handle);
-                echo "Procesamiento del archivo CSV completado.\n";
+                // Verificar si el archivo CSV no está vacío
+                if (filesize($archivoCSV) > 0) {
+                    procesarDatosCSV($handle);
+                    // Cerrar el archivo CSV
+                    fclose($handle);
+                    echo "Procesamiento del archivo CSV completado.\n";
+                } else {
+                    echo "El archivo CSV está vacío.";
+                }
             } else {
                 echo "Error al abrir el archivo CSV.";
             }
