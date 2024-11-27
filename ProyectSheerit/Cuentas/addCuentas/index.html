@@ -45,7 +45,7 @@ document.getElementById("togglePassword").addEventListener("click", function () 
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('../FormularioVentas/obtener_precios.php')
+    fetch('../../FormularioVentas/obtener_precios.php')
         .then(response => response.json())
         .then(data => {
             const select = document.querySelector('select[name="streaming"]');
