@@ -126,18 +126,30 @@ function mostrarDatos(data) {
     $.each(data, function(index, row) {
         if (row !== null) {
             // Construye cada fila de la tabla
-            var htmlRow = '<tr>';
-            htmlRow += '<td data-label="' + headers[0] + '">' + row.nombre_cuenta + '</td>';
-            htmlRow += '<td data-label="' + headers[1] + '">' + row.correo + '</td>';
-            htmlRow += '<td data-label="' + headers[2] + '">' + row.clave + '</td>';
-            htmlRow += '<td data-label="' + headers[3] + '">' + row.nombre + '</td>';
-            htmlRow += '<td data-label="' + headers[4] + '">' + row.apellido + '</td>';
-            htmlRow += '<td data-label="' + headers[5] + '">' + row.numero + '</td>';
-            htmlRow += '<td data-label="' + headers[6] + '">' + row.nombreContacto + '</td>';
-            htmlRow += '<td data-label="' + headers[7] + '">' + row.precio + '</td>';
-            htmlRow += '<td data-label="' + headers[8] + '">' + row.metodoPago + '</td>';
-            htmlRow += '<td data-label="' + headers[9] + '"><div class="dropdown"><button class="dropdown-button">Acciones</button><div class="dropdown-content"><button onclick="copiarDatos(\'' + row.nombre_cuenta + '\', \'' + row.correo + '\', \'' + row.clave + '\')">Copiar</button><button onclick="eliminarPerfil(' + row.clienteID + ')">Eliminar</button><button onclick="cambiarPerfil(' + row.clienteID + ')">Cambiar</button></div></div></td>';
-            htmlRow += '</tr>';
+            var htmlRow = `
+            <tr>
+                <td data-label="${headers[0]}">
+                    <a href="./detallesUsuario.html?usuarioID=${row.clienteID}" class="link-cuenta">${row.nombre_cuenta}</a>
+                </td>
+                <td data-label="${headers[1]}">${row.correo}</td>
+                <td data-label="${headers[2]}">${row.clave}</td>
+                <td data-label="${headers[3]}">${row.nombre}</td>
+                <td data-label="${headers[4]}">${row.apellido}</td>
+                <td data-label="${headers[5]}">${row.numero}</td>
+                <td data-label="${headers[6]}">${row.nombreContacto}</td>
+                <td data-label="${headers[7]}">${row.precio}</td>
+                <td data-label="${headers[8]}">${row.metodoPago}</td>
+                <td data-label="${headers[9]}">
+                    <div class="dropdown">
+                        <button class="dropdown-button">Acciones</button>
+                        <div class="dropdown-content">
+                            <button onclick="copiarDatos('${row.nombre_cuenta}', '${row.correo}', '${row.clave}')">Copiar</button>
+                            <button onclick="eliminarPerfil(${row.clienteID})">Eliminar</button>
+                            <button onclick="cambiarPerfil(${row.clienteID})">Cambiar</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>`;
 
             tabla.append(htmlRow);
         }
