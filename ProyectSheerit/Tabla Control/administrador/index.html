@@ -26,51 +26,51 @@
         <tr>
             <th>
                 <div class="header-cell">
+                    Nombre de Cuenta
+                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(0, this.value)" placeholder="Buscar Nombre de Cuenta">
+                </div>
+            </th>
+            <th>
+                <div class="header-cell">
                     Correo
                     <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
-                    <input type="text" class="search-input" onkeyup="filtrarTabla(0, this.value)" placeholder="Buscar Correo">
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(1, this.value)" placeholder="Buscar Correo">
                 </div>
             </th>
             <th>
                 <div class="header-cell">
                     Clave
                     <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
-                    <input type="text" class="search-input" onkeyup="filtrarTabla(1, this.value)" placeholder="Buscar Clave">
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(2, this.value)" placeholder="Buscar Clave">
                 </div>
             </th>
             <th>
                 <div class="header-cell">
                     Nombre
                     <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
-                    <input type="text" class="search-input" onkeyup="filtrarTabla(2, this.value)" placeholder="Buscar Nombre">
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(3, this.value)" placeholder="Buscar Nombre">
                 </div>
             </th>
             <th>
                 <div class="header-cell">
                     Apellido
                     <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
-                    <input type="text" class="search-input" onkeyup="filtrarTabla(3, this.value)" placeholder="Buscar Apellido">
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(4, this.value)" placeholder="Buscar Apellido">
                 </div>
             </th>
             <th>
                 <div class="header-cell">
                     Número
                     <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
-                    <input type="text" class="search-input" onkeyup="filtrarTabla(4, this.value)" placeholder="Buscar Número">
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(5, this.value)" placeholder="Buscar Número">
                 </div>
             </th>
             <th>
                 <div class="header-cell">
                     Nombre Contacto
                     <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
-                    <input type="text" class="search-input" onkeyup="filtrarTabla(5, this.value)" placeholder="Buscar Nombre Contacto">
-                </div>
-            </th>
-            <th>
-                <div class="header-cell">
-                    Nombre Cuenta
-                    <span class="search-icon" onclick="toggleSearch(this)">🔍</span>
-                    <input type="text" class="search-input" onkeyup="filtrarTabla(6, this.value)" placeholder="Buscar Nombre Cuenta">
+                    <input type="text" class="search-input" onkeyup="filtrarTabla(6, this.value)" placeholder="Buscar Nombre Contacto">
                 </div>
             </th>
             <th>
@@ -127,16 +127,16 @@ function mostrarDatos(data) {
         if (row !== null) {
             // Construye cada fila de la tabla
             var htmlRow = '<tr>';
-            htmlRow += '<td data-label="' + headers[0] + '">' + row.correo + '</td>';
-            htmlRow += '<td data-label="' + headers[1] + '">' + row.clave + '</td>';
-            htmlRow += '<td data-label="' + headers[2] + '">' + row.nombre + '</td>';
-            htmlRow += '<td data-label="' + headers[3] + '">' + row.apellido + '</td>';
-            htmlRow += '<td data-label="' + headers[4] + '">' + row.numero + '</td>';
-            htmlRow += '<td data-label="' + headers[5] + '">' + row.nombreContacto + '</td>';
-            htmlRow += '<td data-label="' + headers[6] + '">' + row.nombre_cuenta + '</td>';
+            htmlRow += '<td data-label="' + headers[0] + '">' + row.nombre_cuenta + '</td>';
+            htmlRow += '<td data-label="' + headers[1] + '">' + row.correo + '</td>';
+            htmlRow += '<td data-label="' + headers[2] + '">' + row.clave + '</td>';
+            htmlRow += '<td data-label="' + headers[3] + '">' + row.nombre + '</td>';
+            htmlRow += '<td data-label="' + headers[4] + '">' + row.apellido + '</td>';
+            htmlRow += '<td data-label="' + headers[5] + '">' + row.numero + '</td>';
+            htmlRow += '<td data-label="' + headers[6] + '">' + row.nombreContacto + '</td>';
             htmlRow += '<td data-label="' + headers[7] + '">' + row.precio + '</td>';
             htmlRow += '<td data-label="' + headers[8] + '">' + row.metodoPago + '</td>';
-            htmlRow += '<td data-label="' + headers[9] + '"><button onclick="eliminarPerfil(' + row.clienteID + ')">Eliminar</button></td>';
+            htmlRow += '<td data-label="' + headers[9] + '"><div class="dropdown"><button class="dropdown-button">Acciones</button><div class="dropdown-content"><button onclick="copiarDatos(\'' + row.nombre_cuenta + '\', \'' + row.correo + '\', \'' + row.clave + '\')">Copiar</button><button onclick="eliminarPerfil(' + row.clienteID + ')">Eliminar</button><button onclick="cambiarPerfil(' + row.clienteID + ')">Cambiar</button></div></div></td>';
             htmlRow += '</tr>';
 
             tabla.append(htmlRow);
@@ -219,6 +219,20 @@ function filtrarTabla(colIndex, filtro) {
             }
         }
     });
+}
+
+function copiarDatos(nombreCuenta, correo, clave) {
+    const texto = `*${nombreCuenta}*\n\n*CORREO:* ${correo}\n*CONTRASEÑA:* ${clave}`;
+    navigator.clipboard.writeText(texto).then(() => {
+        alert("Datos copiados al portapapeles");
+    }).catch(() => {
+        alert("Error al copiar los datos");
+    });
+}
+
+function cambiarPerfil(clienteID) {
+    alert(`Función para cambiar datos del cliente con ID: ${clienteID}`);
+    // Aquí puedes agregar una llamada AJAX o redirigir a un formulario de edición.
 }
 
     </script>
