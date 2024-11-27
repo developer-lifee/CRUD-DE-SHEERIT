@@ -9,6 +9,39 @@ function fetchPrices() {
         });
 }
 
+// Initialize precios array
+var precios = {};
+
+// Function to populate cuenta dropdowns
+function populateCuentas(preciosData) {
+    precios = preciosData; // Store precios in array
+    
+    const cuentaSelects = document.querySelectorAll('select[name="cuenta[]"]');
+    cuentaSelects.forEach(select => {
+        // Clear existing options
+        select.innerHTML = '<option value="" disabled selected>Selecciona una cuenta</option>';
+        // Populate with fetched precios
+        for (const cuenta in precios) {
+            const option = document.createElement('option');
+            option.value = cuenta;
+            option.textContent = capitalize(cuenta);
+            select.appendChild(option);
+        }
+    });
+}
+
+// Capitalize function
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// Fetch precios on page load
+document.addEventListener('DOMContentLoaded', function() {
+    fetchPrices().then(fetchedPrecios => {
+        populateCuentas(fetchedPrecios);
+    });
+});
+
 function agregarCuenta() {
     const cuentaItem = document.querySelector('.cuentaItem');
     const cuentasContainer = document.getElementById('cuentasContainer');

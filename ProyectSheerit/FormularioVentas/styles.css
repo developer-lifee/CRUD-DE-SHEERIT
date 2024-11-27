@@ -50,6 +50,31 @@ select option {
     color: #000;            /* Dark text for options */
 }
 
+/* Adjust registration fields to have consistent sizes */
+#standardForm input,
+#standardForm select,
+#alternativeForm input,
+#alternativeForm select {
+    width: 100%;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    color: #fff;
+    border-radius: 5px;
+}
+
+/* Example for specific inputs in alternativeForm */
+#alternativeForm input[type="text"],
+#alternativeForm select {
+    /* Ensure consistent sizing */
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    /* ...other styles... */
+}
+
 .btn {
     display: block;
     width: 100%;
