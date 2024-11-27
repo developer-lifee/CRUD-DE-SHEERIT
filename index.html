@@ -10,7 +10,19 @@
     <button id="theme" class="btn btn-theme">🌙</button>
     <button id="sell" class="btn btn-green" onclick="window.location.href='ProyectSheerit/FormularioVentas'">Vender</button>
     <button id="manage" class="btn btn-blue" onclick="window.location.href='index2.html'">Administrar</button>
-        <button id="add" class="btn btn-green" onclick="window.location.href='ProyectSheerit/Cuentas/addCuentas'">AñadirAcc</button>
+    <div class="relative">
+        <button id="add" class="btn btn-green">Cuentas</button>
+        <div id="dropdown" class="hidden absolute bg-white shadow-md rounded mt-2">
+            <a href="ProyectSheerit/Cuentas/addCuentas" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Agregar Cuentas</a>
+            <a href="ProyectSheerit/Cuentas/adminCuentas" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Administrar Cuentas</a>
+        </div>
+    </div>
     <script src="main.js"></script>
+    <script>
+        document.getElementById('add').addEventListener('click', function() {
+            var dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>
