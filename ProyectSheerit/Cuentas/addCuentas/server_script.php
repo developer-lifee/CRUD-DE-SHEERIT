@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $streamingData = $stmtIdStreaming->fetch(PDO::FETCH_ASSOC);
 
             if (!$streamingData) {
-                throw new Exception("No se encontró el servicio de streaming proporcionado.");
+                throw new Exception("No se encontró el servicio de streaming proporcionado: " . htmlspecialchars($streaming));
             }
 
             $id_streaming = $streamingData['id_streaming'];
@@ -36,12 +36,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Definir la cantidad de perfiles según el servicio de streaming
             $perfilesPorServicio = [
-                'NETFLIX' => 5, 'AMAZON' => 6, 'CRUNCHYROLL' => 5, 
-                'DISNEY' => 7, 'STAR +' => 7, 'HBO' => 5, 'SPOTIFY' => 1,
-                'YOUTUBE' => 5, 'XBOX' => 3, 'IPTV' => 5, 'GPT' => 7, 'PARAMOUNT' => 6
+                'Netflix' => 5,
+                'Amazon' => 6,
+                'Crunchyroll' => 5,
+                'Disney' => 7,
+                'Star +' => 7,
+                'HBO' => 5,
+                'Spotify' => 1,
+                'Youtube' => 5,
+                'Xbox' => 3,
+                'IPTV' => 5,
+                'GPT' => 7,
+                'Paramount' => 6
             ];
 
-            $cantidadPerfiles = $perfilesPorServicio[strtoupper($streaming)] ?? 0;
+            $cantidadPerfiles = $perfilesPorServicio[$streaming] ?? 0;
 
             // Insertar perfiles según la cantidad definida para el servicio
             if ($cantidadPerfiles > 0) {
@@ -65,6 +74,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header('Content-Type: application/json');
     echo json_encode($response);
 }
-?>
-
-
