@@ -40,6 +40,16 @@ input::placeholder {
     color: #ccc;
 }
 
+select {
+    background-color: #fff; /* Light background */
+    color: #000;            /* Dark text */
+}
+
+select option {
+    background-color: #fff; /* Light background for options */
+    color: #000;            /* Dark text for options */
+}
+
 .btn {
     display: block;
     width: 100%;

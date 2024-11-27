@@ -104,51 +104,55 @@ function calcularTotalAlt() {
 }
 
 function savePhoneNumber() {
-    var telefono = document.getElementsByName('telefono')[0].value; // Obtener el valor del número de teléfono del formulario
+    var telefono = document.getElementsByName('telefono')[0].value;
 
-    // Crear un objeto XMLHttpRequest para enviar la solicitud al servidor
     var xhr = new XMLHttpRequest();
 
-    // Configurar la solicitud
     xhr.open('POST', 'telefono.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-    // Definir la función que se ejecutará cuando la solicitud se complete
     xhr.onload = function () {
         if (xhr.status === 200) {
-            // Si la solicitud se completó exitosamente
-            var response = JSON.parse(xhr.responseText); // Analizar la respuesta JSON del servidor
+            var response = JSON.parse(xhr.responseText);
             if (response.registrado) {
-                // Si el número está registrado
-                document.getElementById('standardForm').style.display = 'block'; // Mostrar el formulario registrado
-                document.getElementById('alternativeForm').style.display = 'none'; // Ocultar el formulario alternativo
-                document.getElementById('telefonoHidden').value = telefono; // Asignar el número de teléfono al campo oculto
+                document.getElementById('standardForm').style.display = 'block';
+                document.getElementById('alternativeForm').style.display = 'none';
+                document.getElementById('telefonoHidden').value = telefono;
+
+                // Attach event listeners
+                document.getElementById('meses').addEventListener('change', calcularTotal);
+                document.querySelectorAll('#cuentasContainer select[name="cuenta[]"]').forEach(select => {
+                    select.addEventListener('change', calcularTotal);
+                });
+
+                calcularTotal(); // Update total price
+
             } else {
-                // Si el número no está registrado
-                document.getElementById('alternativeForm').style.display = 'block'; // Mostrar el formulario alternativo
-                document.getElementById('standardForm').style.display = 'none'; // Ocultar el formulario registrado
+                document.getElementById('alternativeForm').style.display = 'block';
+                document.getElementById('standardForm').style.display = 'none';
+
+                // Attach event listeners
+                document.getElementById('mesesAlt').addEventListener('change', calcularTotalAlt);
+                document.querySelectorAll('#cuentasContainerAlt select[name="cuenta[]"]').forEach(select => {
+                    select.addEventListener('change', calcularTotalAlt);
+                });
+
+                calcularTotalAlt(); // Update total price
             }
         } else {
-            // Si hubo un error al enviar la solicitud
             console.error('Error al enviar la solicitud.');
         }
     };
 
-    // Manejar errores de red
     xhr.onerror = function () {
         console.error('Error de red al enviar la solicitud.');
     };
 
-    // Enviar la solicitud con el número de teléfono
     xhr.send('telefono=' + telefono);
 }
 
-document.getElementById('phoneForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    savePhoneNumber(); // Llama a savePhoneNumber cuando se envía el formulario de teléfono
-});
-
-// Añade un event listener para calcular el total cuando se cambia la selección de cuenta o meses
+// Remove or comment out the initial event listeners
+/*
 document.getElementById('meses').addEventListener('change', calcularTotal);
 document.getElementById('mesesAlt').addEventListener('change', calcularTotalAlt);
 document.querySelectorAll('#cuentasContainer select[name="cuenta[]"]').forEach(select => {
@@ -156,4 +160,10 @@ document.querySelectorAll('#cuentasContainer select[name="cuenta[]"]').forEach(s
 });
 document.querySelectorAll('#cuentasContainerAlt select[name="cuenta[]"]').forEach(select => {
     select.addEventListener('change', calcularTotalAlt);
+});
+*/
+
+document.getElementById('phoneForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    savePhoneNumber(); // Llama a savePhoneNumber cuando se envía el formulario de teléfono
 });
