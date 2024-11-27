@@ -49,7 +49,11 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function copiarDatos(nombreCuenta, correo, clave, perfil, fechaPerfil) {
-    const texto = `NOMBRE DE CUENTA\n\n*CORREO:* ${correo}\n*CONTRASEÑA:* ${clave}\n*PERFIL:* ${perfil}\n\n*EL SERVICIO VENCERA EL DIA: ${fechaPerfil}`;
+    const fecha = new Date(fechaPerfil);
+    const opcionesFecha = { day: 'numeric', month: 'long', year: 'numeric' };
+    const fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFecha);
+
+    const texto = `${nombreCuenta.toUpperCase()}\n\n*CORREO:* ${correo}\n*CONTRASEÑA:* ${clave}\n*PERFIL:* ${perfil}\n\n*EL SERVICIO VENCERÁ EL DÍA: ${fechaFormateada}`;
     navigator.clipboard.writeText(texto).then(() => {
         alert("Datos copiados al portapapeles");
     }).catch(() => {
