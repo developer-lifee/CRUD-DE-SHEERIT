@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["telefonoHidden"])) {
                         }, function(err) {
                             console.error('Error al copiar al portapapeles: ', err);
                         });
-                        window.location.href = 'detallesUsuario.php?clienteID=$clienteID';
+                        window.location.href = '../Tabla Control/administrador/detallesUsuario.php?clienteID=$clienteID';
                     </script>";
                 } else {
                     echo "No se encontró un perfil válido para actualizar en la cuenta: " . $cuenta . "<br />";
