@@ -89,6 +89,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["numero"])) {
         $total = floor($total / 1000) * 1000;
 
         echo "El total a pagar es: $total COP";
+        echo "<script>
+            window.location.href = 'detallesUsuario.php?clienteID=$clienteID';
+        </script>";
     } catch (PDOException $exception) {
         echo "Error: " . $exception->getMessage();
     }
