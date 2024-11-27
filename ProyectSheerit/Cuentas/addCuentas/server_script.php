@@ -8,6 +8,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $clave = $_POST['clave'] ?? null;
     $streaming = $_POST['streaming'] ?? null;
 
+    // Debug: Log the streaming value received
+    error_log('Streaming seleccionado: ' . var_export($streaming, true));
+
     if (!$correo || !$clave || !$streaming) {
         $response['success'] = false;
         $response['message'] = 'Correo, clave y streaming son requeridos.';
@@ -15,8 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             $conn->beginTransaction();
 
-            // Identificar id_streaming y precio basado en el nombre de streaming
-            $sqlIdStreaming = "SELECT id_streaming, precio FROM lista_maestra WHERE nombre_cuenta = ?";
+            // Identificar id_streaming, precio y max_perfiles basado en el nombre de streaming
+            $sqlIdStreaming = "SELECT id_streaming, precio, max_perfiles FROM lista_maestra WHERE nombre_cuenta = ?";
             $stmtIdStreaming = $conn->prepare($sqlIdStreaming);
             $stmtIdStreaming->execute([$streaming]);
             $streamingData = $stmtIdStreaming->fetch(PDO::FETCH_ASSOC);
@@ -27,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $id_streaming = $streamingData['id_streaming'];
             $precioUnitario = $streamingData['precio'];
+            $cantidadPerfiles = $streamingData['max_perfiles'];
 
             // Insertar en datosCuenta
             $sql = "INSERT INTO datosCuenta (correo, clave, fechaCuenta, id_streaming) VALUES (?, ?, NOW(), ?)";
@@ -34,25 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([$correo, $clave, $id_streaming]);
             $idCuenta = $conn->lastInsertId();
 
-            // Definir la cantidad de perfiles según el servicio de streaming
-            $perfilesPorServicio = [
-                'Netflix' => 5,
-                'Amazon' => 6,
-                'Crunchyroll' => 5,
-                'Disney' => 7,
-                'Star +' => 7,
-                'HBO' => 5,
-                'Spotify' => 1,
-                'Youtube' => 5,
-                'Xbox' => 3,
-                'IPTV' => 5,
-                'GPT' => 7,
-                'Paramount' => 6
-            ];
-
-            $cantidadPerfiles = $perfilesPorServicio[$streaming] ?? 0;
-
-            // Insertar perfiles según la cantidad definida para el servicio
+            // Insertar perfiles según la cantidad definida en la base de datos
             if ($cantidadPerfiles > 0) {
                 $sqlPerfil = "INSERT INTO perfil (idCuenta, precioUnitario, id_streaming) VALUES (?, ?, ?)";
                 $stmtPerfil = $conn->prepare($sqlPerfil);
@@ -74,3 +60,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header('Content-Type: application/json');
     echo json_encode($response);
 }
+?>
