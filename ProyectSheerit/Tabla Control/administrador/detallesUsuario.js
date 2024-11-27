@@ -31,8 +31,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                 '${cuenta.nombre_cuenta}', 
                                 '${cuenta.correo}', 
                                 '${cuenta.clave}', 
-                                '${cuenta.nombre_perfil}', 
-                                '${cuenta.fecha_vencimiento}'
+                                '${cuenta.perfil || cuenta.nombre}', 
+                                '${cuenta.fechaPerfil || cuenta.fecha_vencimiento}'
                             )">Copiar</button>
                         </td>
                     `;
