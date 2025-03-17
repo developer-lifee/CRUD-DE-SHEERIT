@@ -72,6 +72,9 @@
 
 /* New dropdown menu styles */
 .dropdown-menu {
+    /* Removemos o forzamos la posición a relativa en lugar de absolute */
+    position: relative !important;
+    margin-top: 0.5rem;
     background-color: #ffffff;
     color: #1A202C;
     border: 1px solid #e2e8f0;
@@ -84,7 +87,6 @@ body.dark .dropdown-menu {
 }
 @media (max-width: 640px) {
     .dropdown-menu {
-        position: static;
         width: 100%;
         margin-top: 5px;
     }

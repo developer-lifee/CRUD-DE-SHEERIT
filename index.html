@@ -33,7 +33,16 @@
             document.getElementById('dropdown').classList.toggle('hidden');
         });
         document.getElementById('manage').addEventListener('click', function() {
-            document.getElementById('dropdown-manage').classList.toggle('hidden');
+            var dropdownManage = document.getElementById('dropdown-manage');
+            dropdownManage.classList.toggle('hidden');
+            
+            var cuentasContainer = document.getElementById('add');
+            if (!dropdownManage.classList.contains('hidden')) {
+                // Ajusta el valor según el alto real del dropdown
+                cuentasContainer.style.marginTop = '100px';
+            } else {
+                cuentasContainer.style.marginTop = '0';
+            }
         });
     </script>
 </body>
