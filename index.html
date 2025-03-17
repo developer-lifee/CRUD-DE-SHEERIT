@@ -5,44 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Página Web</title>
     <link href="main.css" rel="stylesheet">
-    <style>
-        body.dark {
-            background-color: #1a202c;
-            color: #a0aec0;
-        }
-        .btn {
-            width: 200px;
-            margin: 5px;
-        }
-        @media (max-width: 640px) {
-            .btn {
-                width: calc(100% - 10px);
-                margin-bottom: 10px;
-            }
-        }
-        .relative {
-            position: relative;
-        }
-        .absolute {
-            position: absolute;
-        }
-    </style>
 </head>
 <body class="bg-gray-800 text-white flex flex-col items-center justify-center min-h-screen dark">
     <button id="theme" class="btn btn-theme">🌞</button>
     <button id="sell" class="btn btn-green" onclick="window.location.href='ProyectSheerit/FormularioVentas'">Vender</button>
     <div class="relative">
         <button id="manage" class="btn btn-blue">Administrar</button>
-        <div id="dropdown-manage" class="hidden absolute bg-white shadow-md rounded mt-2 z-10">
-            <a href="ProyectSheerit/Tabla Control/administrador" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Control</a>
-            <a href="ProyectSheerit/Tabla Control/cobro" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Cobro</a>
+        <div id="dropdown-manage" class="hidden absolute shadow-md rounded mt-2 z-10 dropdown-menu">
+            <a href="ProyectSheerit/Tabla Control/administrador" class="block px-4 py-2 hover:bg-gray-200">Control</a>
+            <a href="ProyectSheerit/Tabla Control/cobro" class="block px-4 py-2 hover:bg-gray-200">Cobro</a>
         </div>
     </div>
     <div class="relative">
         <button id="add" class="btn btn-green">Cuentas</button>
-        <div id="dropdown" class="hidden absolute bg-white shadow-md rounded mt-2 z-10">
-            <a href="ProyectSheerit/Cuentas/addCuentas" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Agregar Cuentas</a>
-            <a href="ProyectSheerit/Cuentas/adminCuentas" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Administrar Cuentas</a>
+        <div id="dropdown" class="hidden absolute shadow-md rounded mt-2 z-10 dropdown-menu">
+            <a href="ProyectSheerit/Cuentas/addCuentas" class="block px-4 py-2 hover:bg-gray-200">Agregar Cuentas</a>
+            <a href="ProyectSheerit/Cuentas/adminCuentas" class="block px-4 py-2 hover:bg-gray-200">Administrar Cuentas</a>
         </div>
     </div>
     <script src="main.js"></script>

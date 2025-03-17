@@ -69,3 +69,13 @@
 .dark-mode .btn-theme {
     color: #F7FAFC;
 }
+
+/* New dropdown menu styles */
+.dropdown-menu {
+    background-color: #ffffff;
+    color: #1A202C;
+}
+body.dark .dropdown-menu {
+    background-color: #2d3748;
+    color: #F7FAFC;
+}
