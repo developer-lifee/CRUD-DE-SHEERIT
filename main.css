@@ -7,6 +7,7 @@
     font-size: 1.25rem;
     transition-duration: 0.4s;
     margin: 1rem;
+    width: 200px;
 }
 @media (min-width: 640px) { /* Tamaño de fuente para pantallas medianas */
     .btn {
@@ -17,6 +18,12 @@
 @media (min-width: 1024px) { /* Tamaño de fuente para pantallas grandes */
     .btn {
         font-size: 2rem;
+    }
+}
+@media (max-width: 640px) {
+    .btn {
+        width: calc(100% - 10px);
+        margin-bottom: 10px;
     }
 }
 .btn-green {
