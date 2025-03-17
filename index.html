@@ -5,11 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Página Web</title>
     <link href="main.css" rel="stylesheet">
+    <style>
+        body.dark {
+            background-color: #1a202c;
+            color: #a0aec0;
+        }
+        @media (max-width: 640px) {
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-200 flex items-center justify-center h-screen">
-    <button id="theme" class="btn btn-theme">🌙</button>
+<body class="bg-gray-800 text-white flex flex-col items-center justify-center min-h-screen dark">
+    <button id="theme" class="btn btn-theme">🌞</button>
     <button id="sell" class="btn btn-green" onclick="window.location.href='ProyectSheerit/FormularioVentas'">Vender</button>
-    <button id="manage" class="btn btn-blue" onclick="window.location.href='index2.html'">Administrar</button>
+    <div class="relative">
+        <button id="manage" class="btn btn-blue">Administrar</button>
+        <div id="dropdown-manage" class="hidden absolute bg-white shadow-md rounded mt-2">
+            <a href="ProyectSheerit/Tabla Control/administrador" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Control</a>
+            <a href="ProyectSheerit/Tabla Control/cobro" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Cobro</a>
+        </div>
+    </div>
     <div class="relative">
         <button id="add" class="btn btn-green">Cuentas</button>
         <div id="dropdown" class="hidden absolute bg-white shadow-md rounded mt-2">
@@ -19,9 +37,19 @@
     </div>
     <script src="main.js"></script>
     <script>
+        document.getElementById('theme').addEventListener('click', function() {
+            document.body.classList.toggle('dark');
+            this.textContent = document.body.classList.contains('dark') ? '🌞' : '🌙';
+        });
+
         document.getElementById('add').addEventListener('click', function() {
             var dropdown = document.getElementById('dropdown');
             dropdown.classList.toggle('hidden');
+        });
+
+        document.getElementById('manage').addEventListener('click', function() {
+            var dropdownManage = document.getElementById('dropdown-manage');
+            dropdownManage.classList.toggle('hidden');
         });
     </script>
 </body>
