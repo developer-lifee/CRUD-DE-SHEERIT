@@ -74,8 +74,18 @@
 .dropdown-menu {
     background-color: #ffffff;
     color: #1A202C;
+    border: 1px solid #e2e8f0;
+    width: 200px;
 }
 body.dark .dropdown-menu {
     background-color: #2d3748;
     color: #F7FAFC;
+    border: 1px solid #4a5568;
+}
+@media (max-width: 640px) {
+    .dropdown-menu {
+        position: static;
+        width: 100%;
+        margin-top: 5px;
+    }
 }
