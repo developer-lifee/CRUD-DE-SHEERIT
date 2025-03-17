@@ -1,7 +1,6 @@
-
-
 document.getElementById('theme').addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
+    document.body.classList.toggle('dark');
+    this.textContent = document.body.classList.contains('dark') ? '🌞' : '🌙';
 });
 
 document.addEventListener('keydown', function(event) {

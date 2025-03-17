@@ -10,11 +10,21 @@
             background-color: #1a202c;
             color: #a0aec0;
         }
+        .btn {
+            width: 200px;
+            margin: 5px;
+        }
         @media (max-width: 640px) {
             .btn {
                 width: 100%;
                 margin-bottom: 10px;
             }
+        }
+        .relative {
+            position: relative;
+        }
+        .absolute {
+            position: absolute;
         }
     </style>
 </head>
@@ -23,14 +33,14 @@
     <button id="sell" class="btn btn-green" onclick="window.location.href='ProyectSheerit/FormularioVentas'">Vender</button>
     <div class="relative">
         <button id="manage" class="btn btn-blue">Administrar</button>
-        <div id="dropdown-manage" class="hidden absolute bg-white shadow-md rounded mt-2">
+        <div id="dropdown-manage" class="hidden absolute bg-white shadow-md rounded mt-2 z-10">
             <a href="ProyectSheerit/Tabla Control/administrador" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Control</a>
             <a href="ProyectSheerit/Tabla Control/cobro" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Cobro</a>
         </div>
     </div>
     <div class="relative">
         <button id="add" class="btn btn-green">Cuentas</button>
-        <div id="dropdown" class="hidden absolute bg-white shadow-md rounded mt-2">
+        <div id="dropdown" class="hidden absolute bg-white shadow-md rounded mt-2 z-10">
             <a href="ProyectSheerit/Cuentas/addCuentas" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Agregar Cuentas</a>
             <a href="ProyectSheerit/Cuentas/adminCuentas" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Administrar Cuentas</a>
         </div>
